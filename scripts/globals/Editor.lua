@@ -22,7 +22,11 @@ function Editor:enter(previous_state)
     self.inspector = EditorInspector(self)
     self.inspector.origin_x = 1
     self.inspector.visible = false
-    self.timer:tween(0.25, self, {margins = {200, 20, 20, 120}, music_filter = 1, inspector = {origin_x = 0}}, "out-quad", function ()
+    self.timer:tween(0.25, self, {
+        music_filter = 1,
+        margins = {200, 20, 20, 120},
+        inspector = {origin_x = 0},
+    }, "out-quad", function ()
         self:selectLayer(self.active_layer)
     end)
     self.stage:addChild(self.inspector)
@@ -156,7 +160,11 @@ function Editor:playtest()
     Registry.registerMapData(self.world.map.id, self.world.map:save())
     Game.world:loadMap(self.world.map.id, self.world.player:getPosition())
     self.state_manager:setState("TRANSITIONOUT")
-    self.timer:tween(0.25, self, {margins = {0, 0, 0, 0}, inspector = {origin_x = 1}, music_filter = 0}, "out-quad", function()
+    self.timer:tween(0.25, self, {
+        music_filter = 0,
+        margins = {0, 0, 0, 0},
+        inspector = {origin_x = 1},
+    }, "out-quad", function()
         Gamestate.pop()
         -- Trick hump into thinking everything is okay (also work around a 1-frame bug with darkfountain)
         love.update(DT)
