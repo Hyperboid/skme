@@ -127,7 +127,7 @@ function EditorMap:loadLayer(layer)
             data.center_x = data.x + data.width/2
             data.center_y = data.y + data.height/2
             local object = self:loadObject(data.type, data)
-            object.object_id = (i - 1) + layer_id_component
+            object.object_id = object.object_id or ((i - 1) + layer_id_component)
             table.insert(self.events, object)
             object.layer = self.next_layer
             self.world:addChild(object)
@@ -140,6 +140,17 @@ end
 ---@param layer EditorLayer
 function EditorMap:loadEditorLayer(layer)
     layer:setLayer(self.next_layer)
+    if layer:includes(EditorObjectLayer) then
+        -- TODO: Some people think 1000 isn't enough. It will be for us.
+        local layer_id_component = ((Utils.getKey(self.layers, layer) - 1) * 1000)
+        layer.layer = self.next_layer
+        ---@cast layer EditorObjectLayer
+        for i, object in pairs(layer.objects) do
+            object.object_id = object.object_id or ((i - 1) + layer_id_component)
+        end
+    elseif layer:includes(TileLayer) then
+        layer:setParent(self.world)
+    end
     layer:setParent(Editor.world)
 end
 

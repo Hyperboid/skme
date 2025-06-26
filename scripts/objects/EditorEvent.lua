@@ -4,6 +4,7 @@
 local EditorEvent, super = Class(Object)
 
 function EditorEvent:init(name, eventtype, data)
+    self.object_id = data.id
     self.type = name
     ---@type Event
     self.eventtype = eventtype
@@ -121,6 +122,7 @@ function EditorEvent:save()
         width = self.width,
         height = self.height,
         properties = self.properties and Utils.copy(self.properties, true),
+        id = self.object_id,
     }
     if self.meta and self.meta.point then
         data.width = 0

@@ -53,6 +53,7 @@ function EditorObjectLayer:loadObject(name, data)
     if eventtype and (eventtype:includes(EditorEvent) or eventtype["USE_IN_EDITOR"]) then -- multi-inherit or dedicated
         local event = eventtype(data)
         event.type = event.type or name
+        event.object_id = data.id
         return event
     end
     if not eventtype then
