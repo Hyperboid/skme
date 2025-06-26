@@ -22,6 +22,9 @@ function NumberInputMenuItemComponent:updateAttached()
 end
 
 function NumberInputMenuItemComponent:onWheelMoved(x,y)
+    if Input.ctrl() then
+        y = y * 10
+    end
     self.setter(self.getter() + y)
     self.input[1] = tostring(self.getter())
 end
