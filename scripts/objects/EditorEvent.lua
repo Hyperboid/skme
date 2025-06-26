@@ -9,7 +9,6 @@ function EditorEvent:init(name, eventtype, data)
     ---@type Event
     self.eventtype = eventtype
     self.meta = self.eventtype and self.eventtype["EDITOR_METADATA"] or {}
-    print(Utils.dump(eventtype))
     self.data = data
     super.init(self, data.x, data.y, data.width, data.height)
     if data.polygon then

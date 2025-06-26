@@ -15,4 +15,13 @@ function EditorLayer:save()
     }
 end
 
+---@param context ContextMenu The menu object containing the options that can be used.
+---@return ContextMenu context The modified menu object.
+function EditorLayer:getContextOptions(context)
+    context:addMenuItem("Delete", "Delete this layer", function()
+        Kristal.Console:log("Not yet implemented")
+    end)
+    return context
+end
+
 return EditorLayer

@@ -163,11 +163,32 @@ function Editor:playtest()
     end)
 end
 
+function Editor:onClickLayer(index, button)
+    self:selectLayer(self.world.map.layers[index])
+    if button == 2 then
+        Editor.context = self.active_layer:getContextOptions(ContextMenu(Utils.getClassName(self.active_layer)))
+        
+        Editor.context:setPosition(Input.getCurrentCursorPosition())
+        Editor.stage:addChild(Editor.context)
+    end
+end
+
 function Editor:onMousePressed(x, y, button, istouch, presses)
     if self.context then
         if self.context:onMousePressed(x, y, button, istouch, presses) then
             return
         end
+    end
+    if x > (SCREEN_WIDTH - self.margins[3]) then
+        local rw, rh = 20, 20
+        local rx = SCREEN_WIDTH - self.margins[3]
+        for index, layer in ipairs(self.world.map.layers) do
+            local ry = ((SCREEN_HEIGHT) - self.margins[4]) - (index * rh)
+            if CollisionUtil.pointRect(x, y, rx, ry, rw, rh) then
+                self:onClickLayer(index, button)
+            end
+        end
+        return
     end
     -- local mouse = PointCollider(nil, x, y)
     if x < self.margins[1] or x > (SCREEN_WIDTH - self.margins[3]) then return end

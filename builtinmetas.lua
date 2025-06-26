@@ -56,7 +56,12 @@ m[NPC] = {
 
 m[Interactable] = {
     properties = {
-        {id = "actor", type = "string", name = "Actor"},
+        cutscene_prop,
+    }
+}
+
+m[Script] = {
+    properties = {
         cutscene_prop,
     }
 }
@@ -67,7 +72,14 @@ m[PushBlock] = {
 
 m[DarkFountain] = {
     point = true,
-    progin = {0.5, 1}
+    origin = {0.5, 1}
+}
+
+m[Transition] = {
+    properties = {
+        {id = "map", type = "string", name = "Map", completions = Registry.map_data},
+        {id = "marker", type = "string", delete_empty = true},
+    },
 }
 
 return m
