@@ -48,6 +48,7 @@ end
 
 function EditorObjects:onMousePressed(x, y, button)
     local obj = self:detectObject(x, y)
+    self:selectObject(obj)
     if obj and button == 2 then
         Editor.context = ContextMenu(Utils.getClassName(obj))
         Editor.context:addMenuItem("Duplicate", "Makes a copy of this object at the same position.", function ()
@@ -65,13 +66,11 @@ function EditorObjects:onMousePressed(x, y, button)
         end)
         Editor.context:setPosition(Input.getCurrentCursorPosition())
         Editor.stage:addChild(Editor.context)
-    elseif obj and self.selected_object == obj then
+    elseif obj then
         self.grabbing = true
         local screen_x, screen_y = obj:getScreenPos()
         self.grab_offset_x = x - screen_x
         self.grab_offset_y = y - screen_y
-    else
-        self:selectObject(obj)
     end
 end
 
