@@ -4,7 +4,7 @@ local EditorInspector, super = Class(Object)
 
 ---@param editor Editor
 function EditorInspector:init(editor)
-    super.init(self,0,0,200,SCREEN_HEIGHT)
+    super.init(self,0,20,200,SCREEN_HEIGHT - 20)
     self.editor = editor
     self:resetUI()
     
@@ -12,8 +12,8 @@ end
 
 function EditorInspector:resetUI()
     if self.container then self.container:remove() end
-    self.container = Component(FixedSizing(200), FixedSizing(SCREEN_HEIGHT))
-    self.menu = MouseMenuComponent(FixedSizing(200 - 32), FixedSizing(SCREEN_HEIGHT - 32))
+    self.container = Component(FixedSizing(200), FixedSizing(SCREEN_HEIGHT - 20))
+    self.menu = MouseMenuComponent(FixedSizing(200 - 32), FixedSizing(SCREEN_HEIGHT - 32 - 20))
     self.menu.overflow = 'scroll'
     self.menu:setLayout(VerticalLayout())
     self.menu:setMargins(16)

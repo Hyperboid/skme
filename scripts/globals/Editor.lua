@@ -21,6 +21,7 @@ function Editor:enter(previous_state)
     self.stage:addChild(self.world)
     self.inspector = EditorInspector(self)
     self.inspector.origin_x = 1
+    self.menubar = EditorMenubar()
     self.inspector.visible = false
     self.timer:tween(0.25, self, {
         music_filter = 1,
@@ -30,6 +31,7 @@ function Editor:enter(previous_state)
         self:selectLayer(self.active_layer)
     end)
     self.stage:addChild(self.inspector)
+    self.stage:addChild(self.menubar)
     self.state_manager = StateManager('TRANSITION', self, true)
     self.objects_editor = EditorObjects() ---@type EditorObjects
     self.state_manager:addState("OBJECTS", self.objects_editor)
