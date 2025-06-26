@@ -1,0 +1,48 @@
+local LightEncounter, super = Class(LightEncounter)
+
+function LightEncounter:init()
+    -- Text that will be displayed when the battle starts
+    self.text = "* A skirmish breaks out!"
+
+    -- Is a "But Nobody Came"/"Genocide" Encounter
+    self.nobody_came = false
+
+    -- Is a "story" encounter (can't attack, only hp and lv are shown. a wave is started as soon as the battle starts)
+    self.story = false
+
+    -- Speeds up the soul transition
+    self.fast_transition = false
+
+    -- Whether the default grid background is drawn
+    self.background = true
+    self.background_image = WidescreenLib.widescreen and "ui/lightbattle/backgrounds/battle_wide" or "ui/lightbattle/backgrounds/battle"
+
+    -- The music used for this encounter
+    self.music = "battleut"
+
+    -- Whether characters have the X-Action option in their spell menu
+    self.default_xactions = Game:getConfig("partyActions")
+
+    -- Should the battle skip the YOU WON! text?
+    self.no_end_message = false
+
+    -- Table used to spawn enemies when the battle exists, if this encounter is created before
+    self.queued_enemy_spawns = {}
+
+    -- A copy of battle.defeated_enemies, used to determine how an enemy has been defeated.
+    self.defeated_enemies = nil
+
+    self.can_flee = true
+
+    self.flee_chance = 0
+    self.flee_messages = {
+        "* I'm outta here.", -- 1/20
+        "* I've got better to do.", --1/20
+        "* Escaped...", --17/20
+        "* Don't slow me down." --1/20
+    }
+
+    self.used_flee_message = nil
+end
+
+return LightEncounter
