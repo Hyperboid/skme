@@ -46,7 +46,7 @@ function EditorEvent:registerProperties(inspector)
     inspector:addToMenu(NumberInputMenuItemComponent({
         ref = {self, "y"},
     }))
-    if not (self.meta and self.meta.sprite) then
+    if not (self.meta and (self.meta.sprite or self.meta.point)) then
         inspector:addToMenu(NumberInputMenuItemComponent({
             ref = {self, "width"},
         }))
