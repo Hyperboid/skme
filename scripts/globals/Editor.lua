@@ -52,6 +52,12 @@ function Editor:selectLayer(layer)
     end
 end
 
+function Editor:swapLayers(a, b)
+    local layer_a, layer_b = self.world.map.layers[a], self.world.map.layers[b]
+    -- layer_a.layer, layer_b.layer = layer_b.layer, layer_a.layer
+    self.world.map.layers[a], self.world.map.layers[b] = self.world.map.layers[b], self.world.map.layers[a]
+end
+
 function Editor:setState(state, ...)
     return self.state_manager:setState(state, ...)
 end
@@ -115,9 +121,21 @@ function Editor:onKeyPressed(key, is_repeat)
         self:saveData()
         Input.clear(key, true)
     elseif key == "pageup" then
-        self:selectLayer(self.world.map.layers[Utils.clampWrap(Utils.getIndex(self.world.map.layers, self.active_layer) + 1, #self.world.map.layers)])
+        local cur_index = Utils.getIndex(self.world.map.layers, self.active_layer)
+        local next_index = Utils.clampWrap(cur_index + 1, #self.world.map.layers)
+        if Input.shift() then
+            self:swapLayers(cur_index, next_index)
+        else
+            self:selectLayer(self.world.map.layers[next_index])
+        end
     elseif key == "pagedown" then
-        self:selectLayer(self.world.map.layers[Utils.clampWrap(Utils.getIndex(self.world.map.layers, self.active_layer) - 1, #self.world.map.layers)])
+        local cur_index = Utils.getIndex(self.world.map.layers, self.active_layer)
+        local prev_index = Utils.clampWrap(cur_index - 1, #self.world.map.layers)
+        if Input.shift() then
+            self:swapLayers(cur_index, prev_index)
+        else
+            self:selectLayer(self.world.map.layers[prev_index])
+        end
     end
 end
 
