@@ -210,6 +210,38 @@ return {
         },
         [2] = {
             objects = {
+                [1] = {
+                    height = 40,
+                    id = 1000,
+                    properties = {},
+                    type = "tilebutton",
+                    width = 40,
+                    x = 560,
+                    y = 240,
+                },
+                [2] = {
+                    height = 200,
+                    id = 1001,
+                    properties = {},
+                    type = "fountainfloor",
+                    width = 160,
+                    x = 40,
+                    y = 280,
+                },
+                [3] = {
+                    height = 120,
+                    id = 1002,
+                    properties = {},
+                    type = "magicglass",
+                    width = 240,
+                    x = 360,
+                    y = 320,
+                },
+            },
+            type = "objectgroup",
+        },
+        [3] = {
+            objects = {
                 [2] = {
                     height = 0,
                     id = 1001,
@@ -258,15 +290,6 @@ return {
                     x = 120,
                     y = 278,
                 },
-                [7] = {
-                    height = 200,
-                    id = 1006,
-                    properties = {},
-                    type = "fountainfloor",
-                    width = 160,
-                    x = 40,
-                    y = 280,
-                },
                 [8] = {
                     height = 0,
                     id = 1007,
@@ -278,15 +301,6 @@ return {
                     x = 500,
                     y = 180,
                 },
-                [9] = {
-                    height = 120,
-                    id = 1008,
-                    properties = {},
-                    type = "magicglass",
-                    width = 240,
-                    x = 360,
-                    y = 320,
-                },
                 [10] = {
                     height = 480,
                     id = 1009,
@@ -297,15 +311,6 @@ return {
                     width = 80,
                     x = 800,
                     y = 0,
-                },
-                [11] = {
-                    height = 40,
-                    id = 1010,
-                    properties = {},
-                    type = "tilebutton",
-                    width = 40,
-                    x = 560,
-                    y = 240,
                 },
                 [12] = {
                     height = 0,
@@ -320,6 +325,7 @@ return {
             type = "objectgroup",
         },
     },
+    party_layer = 3,
     properties = {
         light = false,
         music = "rudebuster_boss",
