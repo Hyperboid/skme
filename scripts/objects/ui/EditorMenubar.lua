@@ -17,7 +17,11 @@ function EditorMenubar:refresh()
     file:addItem(SeparatorComponent({thickness = 2})):setMargins(0,2,0,0)
     file:addItem("Save", function () Editor:saveData() end)
     file:addItem("Import Tiled Map (maybe)", SKME.stub("Import Tiled Map"))
-    edit:addItem("New Layer", SKME.stub("New Layer"))
+    local newlayer = edit:addItem("New Layer")
+    newlayer:addItem("Tile Layer", SKME.stub("New Tile Layer"))
+    newlayer:addItem("Object Layer", SKME.stub("New Object Layer"))
+    newlayer:addItem("Controller Layer", SKME.stub("New Controller Layer"))
+    newlayer:addItem("Shape Layer", SKME.stub("New Shape Layer"))
     self:addChild(self.bar)
 end
 

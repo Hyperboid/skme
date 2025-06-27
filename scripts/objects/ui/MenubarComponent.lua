@@ -1,4 +1,5 @@
 ---@class MenubarComponent: MouseMenuComponent
+---@overload fun(...): MenubarComponent
 ---@field open_menu MenubarItemComponent?
 local MenubarComponent, super = Class("MouseMenuComponent")
 

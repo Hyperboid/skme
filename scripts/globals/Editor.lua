@@ -113,6 +113,7 @@ function Editor:onKeyPressed(key, is_repeat)
         self:playtest()
     elseif Input.ctrl() and key == "s" then
         self:saveData()
+        Input.clear(key, true)
     elseif key == "pageup" then
         self:selectLayer(self.world.map.layers[Utils.clampWrap(Utils.getIndex(self.world.map.layers, self.active_layer) + 1, #self.world.map.layers)])
     elseif key == "pagedown" then
@@ -120,7 +121,10 @@ function Editor:onKeyPressed(key, is_repeat)
     end
 end
 
-function Editor:saveData()
+function Editor:saveData(no_sound)
+    if not no_sound then
+        Assets.stopAndPlaySound("save")
+    end
     local data = "return " .. dumper(self.world.map:save())
     local filepath = Mod.info.path .. "/scripts/world/maps/"..self.world.map.id
     if (love.filesystem.getInfo(filepath) or {}).type == "directory" then

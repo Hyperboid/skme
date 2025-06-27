@@ -24,7 +24,9 @@ function MenubarItemComponent:getComponents()
     return items
 end
 
-
+---@generic T
+---@param item string|T
+---@return T|DropdownItemComponent
 function MenubarItemComponent:addItem(item, ...)
     if type(item) == "string" then
         item = DropdownItemComponent("[font:main,16]"..item, ...)
