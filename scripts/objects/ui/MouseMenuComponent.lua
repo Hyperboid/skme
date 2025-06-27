@@ -60,17 +60,21 @@ function MouseMenuComponent:update()
         end
     end
     if cur_hovered ~= self.last_hovered then
-        if self.last_hovered then
-            self.last_hovered:onHovered(false, false)
-        end
-        if cur_hovered then
-            cur_hovered:onHovered(true, false)
-        end
+        self:hoverItem(cur_hovered)
     end
     if cur_hovered and Input.mousePressed(1) and not TextInput.active then
         cur_hovered:onSelected()
     end
-    self.last_hovered = cur_hovered
+end
+
+function MouseMenuComponent:hoverItem(hovered)
+    if self.last_hovered then
+        self.last_hovered:onHovered(false, false)
+    end
+    if hovered then
+        hovered:onHovered(true, false)
+    end
+    self.last_hovered = hovered
 end
 
 function MouseMenuComponent:onWheelMoved(x, y)

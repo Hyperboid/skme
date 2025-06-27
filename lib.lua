@@ -2,6 +2,16 @@ local lib = {}
 Registry.registerGlobal("SKME", lib)
 SKME = lib
 
+function lib.stub(text, quiet)
+    local info = debug.getinfo(2)
+    return function ()
+        if not quiet then
+            Assets.stopAndPlaySound("awkward")
+        end
+        Kristal.Console:log("STUB: "..text .. " ("..(info.short_src..":"..info.currentline)..")")
+    end
+end
+
 function lib:init()
     for class, meta in pairs(libRequire("skme", "builtinmetas")) do
         Utils.hook(class, "EDITOR_METADATA", meta, true)
