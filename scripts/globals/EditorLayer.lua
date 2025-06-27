@@ -19,6 +19,9 @@ end
 ---@return ContextMenu context The modified menu object.
 function EditorLayer:getContextOptions(context)
     context:addMenuItem("Delete", "Delete this layer", SKME.stub("Layer deletion"))
+    context:addMenuItem("Mark as party layer", "Mark this layer as the one where the party will appear.", function ()
+        Editor.world.map.party_layer = self
+    end)
     return context
 end
 

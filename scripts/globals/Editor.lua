@@ -244,6 +244,7 @@ function Editor:drawLayerList()
     love.graphics.setLineWidth(1)
     love.graphics.translate(SCREEN_WIDTH - self.margins[3] + 2, SCREEN_HEIGHT - 120 - 18)
     for _, layer in ipairs(self.world.map.layers) do
+        love.graphics.setColor(1,1,1)
         local icon
         if layer:includes(TileLayer) then
             icon = Assets.getTexture("ui/editor/layer/tiles")
@@ -257,6 +258,10 @@ function Editor:drawLayerList()
             Draw.draw(icon)
         else
             love.graphics.rectangle("line", 1, 1, 15, 15)
+        end
+        if layer == self.world.map.party_layer then
+            love.graphics.setColor(1,0,1)
+            love.graphics.rectangle("line", -1, -1, 19, 19)
         end
         love.graphics.translate(0, -20)
     end

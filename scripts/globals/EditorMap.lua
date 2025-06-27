@@ -1,5 +1,6 @@
 ---@class EditorMap: Map
 ---@field layers EditorLayer[]
+---@field party_layer EditorLayer?
 local EditorMap, super = Class(Map)
 
 function EditorMap:init(world, data)
@@ -13,6 +14,9 @@ function EditorMap:init(world, data)
     self.layers = {}
     for index, layerdata in ipairs(self.data and self.data.layers or {}) do
         self.layers[index] = self:createLayer(layerdata.type or "what", layerdata)
+        if index == data.party_layer then
+            self.party_layer = self.layers[index]
+        end
     end
     if data then
         self.id = data.id
@@ -43,6 +47,7 @@ function EditorMap:save()
         properties = self.properties,
         layers = {},
         tilesets = {},
+        party_layer = self.party_layer and Utils.getKey(self.layers, self.party_layer)
     }
     for index, layer in ipairs(self.layers) do
         data.layers[index] = layer:save()
@@ -75,7 +80,9 @@ function EditorMap:loadMapData(data)
         self.next_layer = self.next_layer + self.depth_per_layer
     end
 
-    self.object_layer = nil
+    if self.party_layer then
+        self.object_layer = self.party_layer.layer
+    end
 
     -- old behavior, ideally should not be used
     if not self.object_layer then
