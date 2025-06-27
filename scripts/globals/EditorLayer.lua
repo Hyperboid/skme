@@ -6,7 +6,7 @@ EditorLayer.DEFAULT_NAME = "Layer"
 
 function EditorLayer:init(data)
     super.init(self)
-    self.name = data.name or self.DEFAULT_NAME
+    self.name = data and data.name or self.DEFAULT_NAME
 end
 
 function EditorLayer:save()

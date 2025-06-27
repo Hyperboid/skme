@@ -239,6 +239,13 @@ function Editor:onMouseReleased(x, y, button, istouch, presses)
     end
 end
 
+---@param layer EditorLayer
+function Editor:addLayer(layer)
+    table.insert(self.world.map.layers, layer)
+    layer.layer = self.world.map.next_layer
+    self.world.map.next_layer = self.world.map.next_layer + self.world.map.depth_per_layer
+    layer:setParent(self.world)
+end
 
 function Editor:drawLayerList()
     love.graphics.setLineWidth(1)
