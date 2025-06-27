@@ -3,8 +3,6 @@ local EditorObjects, super = Class("SKMEState")
 
 function EditorObjects:init()
     self.browser = EditorObjectBrowser()
-    A = self.browser
-
 end
 
 function EditorObjects:onEnter(prev_state)

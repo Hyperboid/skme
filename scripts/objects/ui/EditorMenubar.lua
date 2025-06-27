@@ -3,6 +3,7 @@ local EditorMenubar, super = Class(Object)
 
 function EditorMenubar:init()
     super.init(self, 0, 0, SCREEN_WIDTH, 20)
+    self.layer = 100
     self:refresh()
 end
 

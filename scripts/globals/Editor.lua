@@ -34,7 +34,9 @@ function Editor:enter(previous_state)
     self.stage:addChild(self.menubar)
     self.state_manager = StateManager('TRANSITION', self, true)
     self.objects_editor = EditorObjects() ---@type EditorObjects
+    self.tiles_editor = EditorTiles() ---@type EditorTiles
     self.state_manager:addState("OBJECTS", self.objects_editor)
+    self.state_manager:addState("TILES", self.tiles_editor)
     Kristal.showCursor()
 end
 
@@ -45,10 +47,12 @@ end
 
 function Editor:selectLayer(layer)
     self.active_layer = layer
+    self:setState("INVALID")
+    if not self.active_layer then return end
     if self.active_layer:includes(EditorObjectLayer) then
         self:setState("OBJECTS")
-    else
-        self:setState("INVALID")
+    elseif self.active_layer:includes(EditorTileLayer) then
+        self:setState("TILES")
     end
 end
 
