@@ -301,6 +301,17 @@ return {
                     x = 500,
                     y = 180,
                 },
+                [9] = {
+                    height = 80,
+                    id = 2008,
+                    properties = {
+                        cutscene = "room1.wall",
+                    },
+                    type = "script",
+                    width = 80,
+                    x = 640,
+                    y = 120,
+                },
                 [10] = {
                     height = 480,
                     id = 1009,
