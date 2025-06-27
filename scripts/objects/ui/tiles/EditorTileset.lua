@@ -16,8 +16,6 @@ function EditorTileset:setTileset(tileset)
     self.tileset = tileset
 end
 
-module
-
 function EditorTileset:draw()
     super.draw(self)
     Draw.draw(self.tileset.texture)
