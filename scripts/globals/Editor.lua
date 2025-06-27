@@ -120,12 +120,15 @@ end
 function Editor:onKeyPressed(key, is_repeat)
     if is_repeat then return end
     if self.state == "TRANSITION" or self.state == "TRANSITIONOUT" then return end
-    if Input.ctrl() and key == "e" then
-        self:playtest()
-    elseif Input.ctrl() and key == "s" then
-        self:saveData()
-        Input.clear(key, true)
-    elseif key == "pageup" then
+    if Input.ctrl() then
+        if Input.ctrl() and key == "e" then
+            self:playtest()
+        elseif Input.ctrl() and key == "s" then
+            self:saveData()
+            Input.clear(key, true)
+        end
+    end
+    if key == "pageup" then
         local cur_index = Utils.getIndex(self.world.map.layers, self.active_layer)
         local next_index = Utils.clampWrap(cur_index + 1, #self.world.map.layers)
         if Input.shift() then
