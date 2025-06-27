@@ -27,7 +27,7 @@ function EditorMap:createLayer(ltype, data)
     if ltype:lower() == "objectgroup" then
         return EditorObjectLayer(data)
     elseif ltype:lower() == "tilelayer" then
-        local layer = TileLayer(self, data)
+        local layer = EditorTileLayer(self, data)
         table.insert(self.tile_layers, layer)
         return layer
     end
@@ -132,7 +132,7 @@ function EditorMap:loadLayer(layer)
             object.layer = self.next_layer
             self.world:addChild(object)
         end
-    elseif layer:includes(TileLayer) then
+    elseif layer:includes(EditorTileLayer) then
         layer:setParent(self.world)
     end
 end
@@ -148,7 +148,7 @@ function EditorMap:loadEditorLayer(layer)
         for i, object in pairs(layer.objects) do
             object.object_id = object.object_id or ((i - 1) + layer_id_component)
         end
-    elseif layer:includes(TileLayer) then
+    elseif layer:includes(EditorTileLayer) then
         layer:setParent(self.world)
     end
     layer:setParent(Editor.world)
