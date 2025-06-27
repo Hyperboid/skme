@@ -54,8 +54,9 @@ end
 
 function Editor:swapLayers(a, b)
     local layer_a, layer_b = self.world.map.layers[a], self.world.map.layers[b]
-    -- layer_a.layer, layer_b.layer = layer_b.layer, layer_a.layer
+    layer_a.layer, layer_b.layer = layer_b.layer, layer_a.layer
     self.world.map.layers[a], self.world.map.layers[b] = self.world.map.layers[b], self.world.map.layers[a]
+    self.world.update_child_list = true
 end
 
 function Editor:setState(state, ...)
