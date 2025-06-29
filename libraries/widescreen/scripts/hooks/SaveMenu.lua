@@ -2,7 +2,7 @@ local SaveMenu, super = Class("SaveMenu")
 
 function SaveMenu:init(marker)
     super.super.init(self, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-    if WidescreenLib.widescreen then self.x = SCREEN_WIDTH_DIST else self.x = 0 end
+    if WidescreenLib.widescreen then self.x = WidescreenLib.SCREEN_WIDTH_DIST else self.x = 0 end
 
     self.parallax_x = 0
     self.parallax_y = 0
@@ -27,7 +27,7 @@ function SaveMenu:init(marker)
     self:addChild(self.save_box)
 
     self.save_header = UIBox(92, 44, 457, 42)
-    self.save_blackout = Rectangle(-self.x, 0, SCREEN_WIDTH_DIST, SCREEN_HEIGHT)
+    self.save_blackout = Rectangle(-self.x, 0, WidescreenLib.SCREEN_WIDTH_DIST, SCREEN_HEIGHT)
     self.save_blackout:setColor(0, 0, 0, 0.8)
     self.save_box:addChild(self.save_header)
     if WidescreenLib.widescreen then self.save_box:addChild(self.save_blackout) end

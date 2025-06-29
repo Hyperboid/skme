@@ -3,7 +3,7 @@ local Battle, super = Class("Battle")
 function Battle:init()
     super.super.init(self)
 
-    if WidescreenLib.widescreen then self.x = SCREEN_WIDTH_DIST else self.x = 0 end
+    if WidescreenLib.widescreen then self.x = WidescreenLib.SCREEN_WIDTH_DIST else self.x = 0 end
 
     self.party = {}
 
@@ -247,7 +247,7 @@ function Battle:createPartyBattlers()
             player_battler:setAnimation("battle/transition")
             self:addChild(player_battler)
             table.insert(self.party,player_battler)
-            table.insert(self.party_beginning_positions, {player_x - SCREEN_WIDTH_DIST, player_y})
+            table.insert(self.party_beginning_positions, {player_x - WidescreenLib.SCREEN_WIDTH_DIST, player_y})
             self.party_world_characters[party_member.id] = Game.world.player
 
             Game.world.player.visible = false
@@ -260,7 +260,7 @@ function Battle:createPartyBattlers()
                     chara_battler:setAnimation("battle/transition")
                     self:addChild(chara_battler)
                     table.insert(self.party, chara_battler)
-                    table.insert(self.party_beginning_positions, {chara_x - SCREEN_WIDTH_DIST, chara_y})
+                    table.insert(self.party_beginning_positions, {chara_x - WidescreenLib.SCREEN_WIDTH_DIST, chara_y})
                     self.party_world_characters[party_member.id] = follower
 
                     follower.visible = false
@@ -274,7 +274,7 @@ function Battle:createPartyBattlers()
                 chara_battler:setAnimation("transition")
                 self:addChild(chara_battler)
                 table.insert(self.party, chara_battler)
-                table.insert(self.party_beginning_positions, {chara_battler.x - SCREEN_WIDTH_DIST, chara_battler.y})
+                table.insert(self.party_beginning_positions, {chara_battler.x - WidescreenLib.SCREEN_WIDTH_DIST, chara_battler.y})
             end
         end
     end

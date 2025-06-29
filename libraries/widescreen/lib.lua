@@ -1,24 +1,38 @@
-WidescreenLib = {}
+local lib = {}
+Registry.registerGlobal("WidescreenLib", lib)
+WidescreenLib = lib
+
+function WidescreenLib:setMode(width, height)
+    width = width or SCREEN_WIDTH*Kristal.Config["windowScale"]
+    height = height or SCREEN_HEIGHT*Kristal.Config["windowScale"]
+    local cur_width, cur_height = love.window.getMode()
+    local changed = cur_height ~= height or cur_width ~= width
+    if changed then
+        love.window.setMode(width, height)
+    end
+end
 
 function WidescreenLib:init()
     print("Loaded Kristal Widescreen")
-    INIT_SCREEN_WIDTH = SCREEN_WIDTH
-    WIDE_SCREEN_WIDTH = math.floor((1920*480)/1080) - 1
+    WidescreenLib.INIT_SCREEN_WIDTH = SCREEN_WIDTH
+    WidescreenLib.WIDE_SCREEN_WIDTH = math.floor((1920*480)/1080) - 1
     self.widescreen = true
     if self.widescreen then
-        SCREEN_WIDTH = WIDE_SCREEN_WIDTH
-    else SCREEN_WIDTH = INIT_SCREEN_WIDTH end
-    SCREEN_WIDTH_DIST = (SCREEN_WIDTH - INIT_SCREEN_WIDTH) / 2
+        SCREEN_WIDTH = WidescreenLib.WIDE_SCREEN_WIDTH
+    else
+        SCREEN_WIDTH = WidescreenLib.INIT_SCREEN_WIDTH
+    end
+    WidescreenLib.SCREEN_WIDTH_DIST = (SCREEN_WIDTH - WidescreenLib.INIT_SCREEN_WIDTH) / 2
 
     if self.widescreen then
         SCREEN_CANVAS = love.graphics.newCanvas(SCREEN_WIDTH * Kristal.Config["windowScale"], SCREEN_HEIGHT * Kristal.Config["windowScale"])
-        love.window.setMode(SCREEN_WIDTH*Kristal.Config["windowScale"], SCREEN_HEIGHT*Kristal.Config["windowScale"])
+        self:setMode()
     end
 
     Utils.hook(DarkStorageMenu, "init", function(orig, self, top_storage, bottom_storage)
-        orig(self)
-        if WidescreenLib.widescreen then self.x = SCREEN_WIDTH_DIST else self.x = 0 end
-        self.description_box_bo = Rectangle(-self.x, 0, SCREEN_WIDTH_DIST, 121)
+        orig(self, top_storage, bottom_storage)
+        if WidescreenLib.widescreen then self.x = WidescreenLib.SCREEN_WIDTH_DIST else self.x = 0 end
+        self.description_box_bo = Rectangle(-self.x, 0, WidescreenLib.SCREEN_WIDTH_DIST, 121)
         self.description_box_bo:setColor(0, 0, 0)
         self.description_box:addChild(self.description_box_bo)
 
@@ -26,7 +40,7 @@ function WidescreenLib:init()
 
     Utils.hook(Shopbox, "init", function(orig, self)
         orig(self)
-        if WidescreenLib.widescreen then self.x = self.x + SCREEN_WIDTH_DIST end
+        if WidescreenLib.widescreen then self.x = self.x + WidescreenLib.SCREEN_WIDTH_DIST end
     end)
 
     Utils.hook(Shop, "postInit", function(orig, self)
@@ -61,7 +75,7 @@ function WidescreenLib:init()
         self.left_box:setOrigin(0, 1)
         self.left_box.x = left
         self.left_box.y = SCREEN_HEIGHT - top + 1
-        self.left_box.width = 338 + 14 + SCREEN_WIDTH_DIST*2
+        self.left_box.width = 338 + 14 + WidescreenLib.SCREEN_WIDTH_DIST*2
         self.left_box.height = 213 - 37 + 1
         self.left_box:setLayer(SHOP_LAYERS["left_box"])
     
@@ -105,7 +119,7 @@ function WidescreenLib:init()
         self:addChild(self.dialogue_text)
         self:setDialogueText(self.encounter_text)
     
-        self.right_text = DialogueText("", 30 + 420 + SCREEN_WIDTH_DIST * 2, 260, 176, 206)
+        self.right_text = DialogueText("", 30 + 420 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 260, 176, 206)
     
         self.right_text:registerCommand("emote", emoteCommand)
     
@@ -118,7 +132,7 @@ function WidescreenLib:init()
 
     Utils.hook(SimpleSaveMenu, "init", function(orig, self, save_id, marker)
         orig(self, save_id, marker)
-        if WidescreenLib.widescreen then self.x = self.x + SCREEN_WIDTH_DIST end
+        if WidescreenLib.widescreen then self.x = self.x + WidescreenLib.SCREEN_WIDTH_DIST end
     end)
 
     if Mod.libs["magical-glass"] then self:hookMagicalGlass() end
@@ -131,7 +145,7 @@ function WidescreenLib:init()
                 self.animating_in = false
             end
     
-            self.x = Ease.outCubic(self.animation_timer, self.init_x, WidescreenLib.widescreen and 25 + 38 + Utils.round(SCREEN_WIDTH_DIST/3) or 25 + 38, 12)
+            self.x = Ease.outCubic(self.animation_timer, self.init_x, WidescreenLib.widescreen and 25 + 38 + Utils.round(WidescreenLib.SCREEN_WIDTH_DIST/3) or 25 + 38, 12)
         end
     end)
 
@@ -145,7 +159,7 @@ function WidescreenLib:hookMagicalGlass()
 
     Utils.hook(LightBattleUI, "init", function(orig, self)
         orig(self)
-        if WidescreenLib.widescreen then self.x = SCREEN_WIDTH_DIST end
+        if WidescreenLib.widescreen then self.x = WidescreenLib.SCREEN_WIDTH_DIST end
     end)
 
     Utils.hook(LightBattleUI, "drawState", function(orig, self)
@@ -174,7 +188,7 @@ function WidescreenLib:hookMagicalGlass()
             end
     
             --Game.battle.soul:setPosition(72 + ((Game.battle.current_menu_x - 1 - (page * 2)) * 248), 255 + ((Game.battle.current_menu_y) * 31.5))
-            Game.battle.soul:setPosition(72 + ((Game.battle.current_menu_x - 1 - (page * 2)) * (248 + extra_offset[1])) + SCREEN_WIDTH_DIST, 255 + ((Game.battle.current_menu_y) * 31.5))
+            Game.battle.soul:setPosition(72 + ((Game.battle.current_menu_x - 1 - (page * 2)) * (248 + extra_offset[1])) + WidescreenLib.SCREEN_WIDTH_DIST, 255 + ((Game.battle.current_menu_y) * 31.5))
     
             local font = Assets.getFont("main_mono")
             love.graphics.setFont(font, 32)
@@ -334,7 +348,7 @@ function WidescreenLib:hookMagicalGlass()
             local max_page = math.ceil(#enemies / 3) - 1
             local page_offset = page * 3
     
-            Game.battle.soul:setPosition(72 + ((Game.battle.current_menu_x - 1 - (page * 2)) * 248) + SCREEN_WIDTH_DIST, 255 + ((Game.battle.current_menu_y) * 31.5))
+            Game.battle.soul:setPosition(72 + ((Game.battle.current_menu_x - 1 - (page * 2)) * 248) + WidescreenLib.SCREEN_WIDTH_DIST, 255 + ((Game.battle.current_menu_y) * 31.5))
             local font_main = Assets.getFont("main")
             local font_mono = Assets.getFont("main_mono")
     
@@ -553,7 +567,7 @@ function WidescreenLib:hookMagicalGlass()
             local max_page = math.ceil(#Game.battle.party / 3) - 1
             local page_offset = page * 3
     
-            Game.battle.soul:setPosition(72 + ((Game.battle.current_menu_x - 1 - (page * 2)) * 248) + SCREEN_WIDTH_DIST, 255 + ((Game.battle.current_menu_y) * 31.5))
+            Game.battle.soul:setPosition(72 + ((Game.battle.current_menu_x - 1 - (page * 2)) * 248) + WidescreenLib.SCREEN_WIDTH_DIST, 255 + ((Game.battle.current_menu_y) * 31.5))
     
             local font = Assets.getFont("main_mono")
             love.graphics.setFont(font)
@@ -668,7 +682,7 @@ function WidescreenLib:hookMagicalGlass()
                 local soul_y = self:storyWave().soul_start_y or (soul_offset_y and center_y + soul_offset_y)
                 Game.battle.soul:slideTo(soul_x or center_x, soul_y or center_y, 17/30)
             else
-                Game.battle.soul:slideTo(WidescreenLib.widescreen and 49 + SCREEN_WIDTH_DIST or 49, 455, 17/30)
+                Game.battle.soul:slideTo(WidescreenLib.widescreen and 49 + WidescreenLib.SCREEN_WIDTH_DIST or 49, 455, 17/30)
             end
     
             wait(17/30)
@@ -741,41 +755,41 @@ function WidescreenLib:hookMagicalGlass()
 end
 
 function WidescreenLib:inInitRatio(x, y)
-    if x > SCREEN_WIDTH_DIST and x < SCREEN_WIDTH - SCREEN_WIDTH_DIST then return true else return false end
+    return x > WidescreenLib.SCREEN_WIDTH_DIST and x < SCREEN_WIDTH - WidescreenLib.SCREEN_WIDTH_DIST
 end
 
 function WidescreenLib:toWideScreen()
-    SCREEN_WIDTH = WIDE_SCREEN_WIDTH
-    SCREEN_WIDTH_DIST = (SCREEN_WIDTH - INIT_SCREEN_WIDTH) / 2
-    SCREEN_CANVAS = love.graphics.newCanvas(SCREEN_WIDTH * Kristal.Config["windowScale"], SCREEN_HEIGHT * Kristal.Config["windowScale"])
-    love.window.setMode(WidescreenLib.widescreen and SCREEN_WIDTH * Kristal.Config["windowScale"] or INIT_SCREEN_WIDTH * Kristal.Config["windowScale"], SCREEN_HEIGHT * Kristal.Config["windowScale"])
+    SCREEN_WIDTH = WidescreenLib.WIDE_SCREEN_WIDTH
+    WidescreenLib.SCREEN_WIDTH_DIST = (SCREEN_WIDTH - WidescreenLib.INIT_SCREEN_WIDTH) / 2
+    SCREEN_CANVAS = love.graphics.newCanvas(SCREEN_WIDTH, SCREEN_HEIGHT)
+    self:setMode()
 
-    if (Game.world) then
-        for _,tilelayer in ipairs(Game.world.stage:getObjects(TileLayer)) do
+    if (Game.stage) then
+        for _,tilelayer in ipairs(Game.stage:getObjects(TileLayer)) do
             tilelayer.drawn = false
         end
     end
 end
 
 function WidescreenLib:toInitScreen()
-    SCREEN_WIDTH = INIT_SCREEN_WIDTH
-    SCREEN_WIDTH_DIST = (SCREEN_WIDTH - INIT_SCREEN_WIDTH) / 2
-    SCREEN_CANVAS = love.graphics.newCanvas(SCREEN_WIDTH * Kristal.Config["windowScale"], SCREEN_HEIGHT * Kristal.Config["windowScale"])
-    love.window.setMode(WidescreenLib.widescreen and SCREEN_WIDTH * Kristal.Config["windowScale"] or INIT_SCREEN_WIDTH * Kristal.Config["windowScale"], SCREEN_HEIGHT * Kristal.Config["windowScale"])
+    SCREEN_WIDTH = WidescreenLib.INIT_SCREEN_WIDTH
+    WidescreenLib.SCREEN_WIDTH_DIST = (SCREEN_WIDTH - WidescreenLib.INIT_SCREEN_WIDTH) / 2
+    SCREEN_CANVAS = love.graphics.newCanvas(SCREEN_WIDTH, SCREEN_HEIGHT)
+    self:setMode()
 
-    if (Game.world) then
-        for _,tilelayer in ipairs(Game.world.stage:getObjects(TileLayer)) do
+    if (Game.stage) then
+        for _,tilelayer in ipairs(Game.stage:getObjects(TileLayer)) do
             tilelayer.drawn = false
         end
     end
 end
-    
+
 function WidescreenLib:unload()
-    SCREEN_WIDTH = INIT_SCREEN_WIDTH
-    INIT_SCREEN_WIDTH = nil
-    SCREEN_WIDTH_DIST = nil
+    SCREEN_WIDTH = WidescreenLib.INIT_SCREEN_WIDTH
+    WidescreenLib.INIT_SCREEN_WIDTH = nil
+    WidescreenLib.SCREEN_WIDTH_DIST = nil
     SCREEN_CANVAS = love.graphics.newCanvas(SCREEN_WIDTH, SCREEN_HEIGHT)
-    love.window.setMode(SCREEN_WIDTH*Kristal.Config["windowScale"], SCREEN_HEIGHT*Kristal.Config["windowScale"])
+    self:setMode()
 end
 
 return WidescreenLib

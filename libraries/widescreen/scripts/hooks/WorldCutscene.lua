@@ -24,7 +24,7 @@ function WorldCutscene:text(text, portrait, actor, options)
         width, height = 530, 104
     end
 
-    self.textbox = Textbox(WidescreenLib.widescreen and 56 + SCREEN_WIDTH_DIST or 56, 344, width, height)
+    self.textbox = Textbox(WidescreenLib.widescreen and 56 + WidescreenLib.SCREEN_WIDTH_DIST or 56, 344, width, height)
     self.textbox.text.hold_skip = false
     self.textbox.layer = WORLD_LAYERS["textbox"]
     Game.world:addChild(self.textbox)
@@ -122,7 +122,7 @@ function WorldCutscene:choicer(choices, options)
         width, height = 530, 104
     end
 
-    self.choicebox = Choicebox(WidescreenLib.widescreen and 56 + SCREEN_WIDTH_DIST or 56, 344, width, height, false, options)
+    self.choicebox = Choicebox(WidescreenLib.widescreen and 56 + WidescreenLib.SCREEN_WIDTH_DIST or 56, 344, width, height, false, options)
     self.choicebox.layer = WORLD_LAYERS["textbox"]
     Game.world:addChild(self.choicebox)
     self.choicebox:setParallax(0, 0)
@@ -171,7 +171,7 @@ function WorldCutscene:textChoicer(text, choices, portrait, actor, options)
         width, height = 530, 104
     end
 
-    self.textchoicebox = TextChoicebox(WidescreenLib.widescreen and 56 + SCREEN_WIDTH_DIST or 56, 344, width, height)
+    self.textchoicebox = TextChoicebox(WidescreenLib.widescreen and 56 + WidescreenLib.SCREEN_WIDTH_DIST or 56, 344, width, height)
     self.textchoicebox.layer = WORLD_LAYERS["textbox"]
     Game.world:addChild(self.textchoicebox)
     self.textchoicebox:setParallax(0, 0)

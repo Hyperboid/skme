@@ -9,10 +9,10 @@ function Shop:draw()
     if self.state == "MAINMENU" then
         Draw.setColor(COLORS.white)
         for i = 1, #self.menu_options do
-            love.graphics.print(self.menu_options[i][1], 480 + SCREEN_WIDTH_DIST*2, 220 + (i * 40))
+            love.graphics.print(self.menu_options[i][1], 480 + WidescreenLib.SCREEN_WIDTH_DIST*2, 220 + (i * 40))
         end
         Draw.setColor(Game:getSoulColor())
-        Draw.draw(self.heart_sprite, 450 + SCREEN_WIDTH_DIST * 2, 230 + (self.main_current_selecting * 40))
+        Draw.draw(self.heart_sprite, 450 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 230 + (self.main_current_selecting * 40))
     elseif self.state == "BUYMENU" then
 
         while self.current_selecting - self.item_offset > 5 do
@@ -63,14 +63,14 @@ function Shop:draw()
         if not self.buy_confirming then
             Draw.draw(self.heart_sprite, 30, 230 + ((self.current_selecting - self.item_offset) * 40))
         else
-            Draw.draw(self.heart_sprite, 30 + 420 + SCREEN_WIDTH_DIST * 2, 230 + 80 + 10 + (self.current_selecting_choice * 30))
+            Draw.draw(self.heart_sprite, 30 + 420 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 230 + 80 + 10 + (self.current_selecting_choice * 30))
             Draw.setColor(COLORS.white)
             local lines = Utils.split(string.format(self.buy_confirmation_text, string.format(self.currency_text, self.items[self.current_selecting].options["price"] or 0)), "\n")
             for i = 1, #lines do
-                love.graphics.print(lines[i], 60 + 400 + SCREEN_WIDTH_DIST * 2, 420 - 160 + ((i - 1) * 30))
+                love.graphics.print(lines[i], 60 + 400 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 420 - 160 + ((i - 1) * 30))
             end
-            love.graphics.print("Yes", 60 + 420 + SCREEN_WIDTH_DIST * 2, 420 - 80)
-            love.graphics.print("No",  60 + 420 + SCREEN_WIDTH_DIST * 2, 420 - 80 + 30)
+            love.graphics.print("Yes", 60 + 420 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 420 - 80)
+            love.graphics.print("No",  60 + 420 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 420 - 80 + 30)
         end
         Draw.setColor(COLORS.white)
 
@@ -109,18 +109,18 @@ function Shop:draw()
                     if can_equip then
                         head_path = Assets.getTexture(party_member:getHeadIcons() .. "/head")
                         if current_item.item.type == "armor" then
-                            Draw.draw(self.stat_icons["defense_1"], offset_x + 470 + SCREEN_WIDTH_DIST * 2, offset_y + 127 + top)
-                            Draw.draw(self.stat_icons["defense_2"], offset_x + 470 + SCREEN_WIDTH_DIST * 2, offset_y + 147 + top)
+                            Draw.draw(self.stat_icons["defense_1"], offset_x + 470 + WidescreenLib.SCREEN_WIDTH_DIST * 2, offset_y + 127 + top)
+                            Draw.draw(self.stat_icons["defense_2"], offset_x + 470 + WidescreenLib.SCREEN_WIDTH_DIST * 2, offset_y + 147 + top)
 
                             for j = 1, 2 do
-                                self:drawBonuses(party_member, party_member:getArmor(j), current_item.options["bonuses"], "defense", offset_x + 470 + 21 + SCREEN_WIDTH_DIST * 2, offset_y + 127 + ((j - 1) * 20) + top)
+                                self:drawBonuses(party_member, party_member:getArmor(j), current_item.options["bonuses"], "defense", offset_x + 470 + 21 + WidescreenLib.SCREEN_WIDTH_DIST * 2, offset_y + 127 + ((j - 1) * 20) + top)
                             end
 
                         elseif current_item.item.type == "weapon" then
-                            Draw.draw(self.stat_icons["attack"], offset_x + 470 + SCREEN_WIDTH_DIST * 2, offset_y + 127 + top)
-                            Draw.draw(self.stat_icons["magic" ], offset_x + 470 + SCREEN_WIDTH_DIST * 2, offset_y + 147 + top)
-                            self:drawBonuses(party_member, party_member:getWeapon(), current_item.options["bonuses"], "attack", offset_x + 470 + 21 + SCREEN_WIDTH_DIST * 2, offset_y + 127 + top)
-                            self:drawBonuses(party_member, party_member:getWeapon(), current_item.options["bonuses"], "magic",  offset_x + 470 + 21 + SCREEN_WIDTH_DIST * 2, offset_y + 147 + top)
+                            Draw.draw(self.stat_icons["attack"], offset_x + 470 + WidescreenLib.SCREEN_WIDTH_DIST * 2, offset_y + 127 + top)
+                            Draw.draw(self.stat_icons["magic" ], offset_x + 470 + WidescreenLib.SCREEN_WIDTH_DIST * 2, offset_y + 147 + top)
+                            self:drawBonuses(party_member, party_member:getWeapon(), current_item.options["bonuses"], "attack", offset_x + 470 + 21 + WidescreenLib.SCREEN_WIDTH_DIST * 2, offset_y + 127 + top)
+                            self:drawBonuses(party_member, party_member:getWeapon(), current_item.options["bonuses"], "magic",  offset_x + 470 + 21 + WidescreenLib.SCREEN_WIDTH_DIST * 2, offset_y + 147 + top)
                         end
                     else
                         head_path = Assets.getTexture(party_member:getHeadIcons() .. "/head_error")
@@ -141,9 +141,9 @@ function Shop:draw()
                 local space = Game.inventory:getFreeSpace(current_storage)
 
                 if space <= 0 then
-                    love.graphics.print("NO SPACE", 521 + SCREEN_WIDTH_DIST * 2, 430)
+                    love.graphics.print("NO SPACE", 521 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 430)
                 else
-                    love.graphics.print("Space:" .. space, 521 + SCREEN_WIDTH_DIST * 2, 430)
+                    love.graphics.print("Space:" .. space, 521 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 430)
                 end
             end
         end
@@ -182,14 +182,14 @@ function Shop:draw()
 
         Draw.draw(self.heart_sprite, 30, 230 + ((self.item_current_selecting - self.item_offset) * 40))
         if self.sell_confirming then
-            Draw.draw(self.heart_sprite, 30 + 420 + SCREEN_WIDTH_DIST * 2, 230 + 80 + 10 + (self.current_selecting_choice * 30))
+            Draw.draw(self.heart_sprite, 30 + 420 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 230 + 80 + 10 + (self.current_selecting_choice * 30))
             Draw.setColor(COLORS.white)
             local lines = Utils.split(string.format(self.sell_confirmation_text, string.format(self.currency_text, inventory[self.item_current_selecting]:getSellPrice())), "\n")
             for i = 1, #lines do
-                love.graphics.print(lines[i], 60 + 400 + SCREEN_WIDTH_DIST * 2, 420 - 160 + ((i - 1) * 30))
+                love.graphics.print(lines[i], 60 + 400 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 420 - 160 + ((i - 1) * 30))
             end
-            love.graphics.print("Yes", 60 + 420 + SCREEN_WIDTH_DIST * 2, 420 - 80)
-            love.graphics.print("No",  60 + 420 + SCREEN_WIDTH_DIST * 2, 420 - 80 + 30)
+            love.graphics.print("Yes", 60 + 420 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 420 - 80)
+            love.graphics.print("No",  60 + 420 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 420 - 80 + 30)
         end
 
         Draw.setColor(COLORS.white)
@@ -278,7 +278,7 @@ function Shop:draw()
        self.state == "TALKMENU" then
         Draw.setColor(COLORS.white)
         love.graphics.setFont(self.font)
-        love.graphics.print(string.format(self.currency_text, self:getMoney()), 440 + SCREEN_WIDTH_DIST*2, 420)
+        love.graphics.print(string.format(self.currency_text, self:getMoney()), 440 + WidescreenLib.SCREEN_WIDTH_DIST*2, 420)
     end
 
     Draw.setColor(0, 0, 0, self.fade_alpha)

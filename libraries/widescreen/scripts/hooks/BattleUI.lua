@@ -77,19 +77,19 @@ end
 function BattleUI:drawActionStrip()
     -- Draw the top line of the action strip
     Draw.setColor(PALETTE["action_strip"])
-    love.graphics.rectangle("fill", 0 - SCREEN_WIDTH_DIST, Game:getConfig("oldUIPositions") and 1 or 0, 640 + SCREEN_WIDTH_DIST*2, Game:getConfig("oldUIPositions") and 3 or 2)
+    love.graphics.rectangle("fill", 0 - WidescreenLib.SCREEN_WIDTH_DIST, Game:getConfig("oldUIPositions") and 1 or 0, 640 + WidescreenLib.SCREEN_WIDTH_DIST*2, Game:getConfig("oldUIPositions") and 3 or 2)
     -- Draw the background of the action strip
     Draw.setColor(PALETTE["action_fill"])
-    love.graphics.rectangle("fill", 0 - SCREEN_WIDTH_DIST, Game:getConfig("oldUIPositions") and 4 or 2, 640 + SCREEN_WIDTH_DIST*2, Game:getConfig("oldUIPositions") and 33 or 35)
+    love.graphics.rectangle("fill", 0 - WidescreenLib.SCREEN_WIDTH_DIST, Game:getConfig("oldUIPositions") and 4 or 2, 640 + WidescreenLib.SCREEN_WIDTH_DIST*2, Game:getConfig("oldUIPositions") and 33 or 35)
 end
 
 function BattleUI:drawActionArena()
     -- Draw the top line of the action area
     Draw.setColor(PALETTE["action_strip"])
-    love.graphics.rectangle("fill", 0 - SCREEN_WIDTH_DIST, 37, 640 + SCREEN_WIDTH_DIST * 2, 3)
+    love.graphics.rectangle("fill", 0 - WidescreenLib.SCREEN_WIDTH_DIST, 37, 640 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 3)
     -- Draw the background of the action area
     Draw.setColor(PALETTE["action_fill"])
-    love.graphics.rectangle("fill", 0 - SCREEN_WIDTH_DIST, 40, 640 + SCREEN_WIDTH_DIST * 2, 115)
+    love.graphics.rectangle("fill", 0 - WidescreenLib.SCREEN_WIDTH_DIST, 40, 640 + WidescreenLib.SCREEN_WIDTH_DIST * 2, 115)
     self:drawState()
 end
 

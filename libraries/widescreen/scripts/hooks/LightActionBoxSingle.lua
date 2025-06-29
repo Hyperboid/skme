@@ -21,7 +21,7 @@ function LightActionBoxSingle:init(x, y, index, battler)
 end
 
 function LightActionBoxSingle:drawStatusStrip()
-    local x, y = 10 + SCREEN_WIDTH_DIST, 130
+    local x, y = 10 + WidescreenLib.SCREEN_WIDTH_DIST, 130
     local name = self.battler.chara:getName()
     local level = self.battler.chara:getLightLV()
 
@@ -100,7 +100,7 @@ function LightActionBoxSingle:createButtons()
                 x = math.floor(67 + ((i - 1) * 117))
             end
             
-            local button = LightActionButton(btn, self.battler, x + SCREEN_WIDTH_DIST, 175)
+            local button = LightActionButton(btn, self.battler, x + WidescreenLib.SCREEN_WIDTH_DIST, 175)
             button.actbox = self
             table.insert(self.buttons, button)
             self:addChild(button)
