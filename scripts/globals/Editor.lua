@@ -68,6 +68,8 @@ function Editor:setState(state, ...)
 end
 
 function Editor:update()
+    -- Because a ton of other things hide the cursor, we show it every frame.
+    Kristal.showCursor()
     if self.state ~= "TRANSITION" and self.state ~= "TRANSITIONOUT" then
         if not OVERLAY_OPEN and not TextInput.active then
             if Input.down("w") then
