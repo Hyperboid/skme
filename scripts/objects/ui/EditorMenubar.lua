@@ -19,7 +19,15 @@ function EditorMenubar:refresh()
         file:addItem("Import Tiled Map (maybe)", SKME.stub("Import Tiled Map"))
     local edit = self.bar:addChild(MenubarItemComponent("Edit"))
         local newlayer = edit:addItem("New Layer")
-            newlayer:addItem("Tile Layer", SKME.stub("New Tile Layer"))
+            newlayer:addItem("Tile Layer", function ()
+                local tiledata = {}
+                for i = 1, Editor.world.map.width * Editor.world.map.height do
+                    table.insert(tiledata, 0)
+                end
+                Editor:addLayer(EditorTileLayer(Editor.world.map, {
+                    data = tiledata
+                }))
+            end)
             newlayer:addItem("Object Layer", function ()
                 Editor:addLayer(EditorObjectLayer())
             end)
