@@ -140,8 +140,9 @@ function EditorMap:loadLayer(layer)
             self.world:addChild(object)
         end
     elseif layer:includes(EditorTileLayer) then
-        layer.layer = self.next_layer
-        layer:setParent(self.world)
+        local reallayer = TileLayer(self, layer.data)
+        reallayer.layer = self.next_layer
+        reallayer:setParent(self.world)
     end
 end
 

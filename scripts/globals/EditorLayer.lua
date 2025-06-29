@@ -6,14 +6,26 @@ EditorLayer.DEFAULT_NAME = "Layer"
 
 function EditorLayer:init(data)
     super.init(self)
+    self:editorLayerInit(data)
+end
+
+function EditorLayer:editorLayerInit(data)
     self.name = data and data.name or self.DEFAULT_NAME
+    if data then
+        self.visible = data.visible ~= false
+    end
 end
 
 function EditorLayer:save()
-    return {
-        name = self.name
+    local data = {
+        name = self.name,
+        visible = self.visible,
     }
+    self:onSave(data)
+    return data
 end
+
+function EditorLayer:onSave(data) end
 
 ---@param context ContextMenu The menu object containing the options that can be used.
 ---@return ContextMenu context The modified menu object.

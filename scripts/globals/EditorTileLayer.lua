@@ -6,11 +6,16 @@ local EditorTileLayer, super = Class({TileLayer, CLASS_NAME_GETTER"EditorLayer"}
 function EditorTileLayer:init(map, data)
     super.init(self, map, data)
     self.data = data
+    self:editorLayerInit(data)
+end
+
+function EditorTileLayer:update()
+    super.update(self)
 end
 
 function EditorTileLayer:save()
     -- not much else to do here?
-    return self.data
+    return Utils.mergeMultiple(super.save(self), self.data)
 end
 
 function EditorTileLayer:getContextOptions(context)
