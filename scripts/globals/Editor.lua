@@ -9,7 +9,6 @@ local dumper = libRequire("skme", "lib.dumper")
 function Editor:enter(previous_state)
     self.previous_state = previous_state
     self.world = EditorWorld(self)
-    self.world.layer = 1000
     self.music_filter = 0
     self.stage = Stage()
     self.timer = self.stage.timer
@@ -23,11 +22,13 @@ function Editor:enter(previous_state)
     self.inspector = EditorInspector(self)
     self.inspector.origin_x = 1
     self.menubar = EditorMenubar()
+    self.menubar.origin_y = 1
     self.inspector.visible = false
     self.timer:tween(0.25, self, {
         music_filter = 1,
         margins = {200, 20, 20, 120},
         inspector = {origin_x = 0},
+        menubar = {origin_y = 0},
     }, "out-quad", function ()
         self:selectLayer(self.active_layer)
     end)
@@ -199,6 +200,7 @@ function Editor:playtest()
         music_filter = 0,
         margins = {0, 0, 0, 0},
         inspector = {origin_x = 1},
+        menubar = {origin_y = 1},
     }, "out-quad", function()
         Gamestate.pop()
         -- Trick hump into thinking everything is okay (also work around a 1-frame bug with darkfountain)
