@@ -25,6 +25,9 @@ function EditorLayer:getContextOptions(context)
         Utils.removeFromTable(Editor.world.map.layers, self)
         self:remove()
     end)
+    context:addMenuItem(self.visible and "Hide" or "Show", "Make this layer " .. (self.visible and "in" or "").."visible.", function ()
+        self.visible = not self.visible
+    end)
     context:addMenuItem("Mark as party layer", "Mark this layer as the one where the party will appear.", function ()
         Editor.world.map.party_layer = self
     end)

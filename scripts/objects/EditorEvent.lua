@@ -58,7 +58,7 @@ function EditorEvent:registerProperties(inspector)
     for _, propdata in ipairs(self.meta and self.meta.properties or {}) do
         local options = {
             ref = {self.properties, propdata.id},
-            name = propdata.name,
+            name = propdata.name or propdata.id,
             completions = propdata.completions,
         }
         ---@type type
@@ -72,6 +72,8 @@ function EditorEvent:registerProperties(inspector)
             else
                 component = FieldMenuItemComponent(options)
             end
+        elseif dattype == "boolean" then
+            component = FieldMenuItemComponent(options)
         elseif dattype == "number" then
             self.properties[propdata.id] = self.properties[propdata.id] or 0
             component = NumberInputMenuItemComponent(options)

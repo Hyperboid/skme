@@ -9,6 +9,7 @@ local dumper = libRequire("skme", "lib.dumper")
 function Editor:enter(previous_state)
     self.previous_state = previous_state
     self.world = EditorWorld(self)
+    self.world.layer = 1000
     self.music_filter = 0
     self.stage = Stage()
     self.timer = self.stage.timer
@@ -269,6 +270,9 @@ function Editor:drawLayerList()
         end
         if self.active_layer == layer then
             love.graphics.rectangle("fill", -2, -2, 20, 20)
+        end
+        if not layer.visible then
+            love.graphics.setColor(1, 1, 1, 0.5)
         end
         if icon then
             Draw.draw(icon)

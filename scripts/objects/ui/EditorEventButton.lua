@@ -26,7 +26,11 @@ function EditorEventButton:onSelected()
     Assets.playSound("grab")
     ---@type EditorObjectLayer
     local layer = Editor.active_layer
-    local event = layer:loadObject(self.name, {type = self.name})
+    local event = layer:loadObject(self.name, {
+        type = self.name,
+        width = 40,
+        height = 40,
+    })
     event:setPosition(Editor.world.player:getPosition())
     layer:addObject(event)
     Editor.objects_editor:selectObject(event)

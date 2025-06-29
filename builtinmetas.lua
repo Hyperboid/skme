@@ -21,6 +21,26 @@ local cutscene_prop = {
     end,
 }
 
+local script_prop = {
+    id = "script",
+    type = "string",
+    name = "Script",
+    delete_empty = true,
+    completions = function ()
+        local completions = {}
+        for group, script in pairs(Registry.event_scripts) do
+            if type(script) == "table" then
+                for id, _ in pairs(script) do
+                    table.insert(completions, group .. "." .. id)
+                end
+            else
+                table.insert(completions, group)
+            end
+        end
+        return completions
+    end,
+}
+
 m[Savepoint] = {
     origin = {0.5},
     sprite = "world/events/savepoint",
@@ -57,17 +77,32 @@ m[NPC] = {
 m[Interactable] = {
     properties = {
         cutscene_prop,
+        script_prop,
     }
 }
 
 m[Script] = {
     properties = {
         cutscene_prop,
+        script_prop,
     }
 }
 
 m[PushBlock] = {
-    sprite = "world/events/push_block"
+    sprite = "world/events/push_block",
+    point = true,
+}
+
+m[TileButton] = {
+    sprite = "world/events/glowtile/idle_02",
+    point = true,
+    origin = {0, 0},
+    properties = {
+        {type = "string", id = "group", delete_empty = true},
+        {type = "boolean", id = "blocks", delete_empty = true},
+        script_prop,
+        cutscene_prop,
+    },
 }
 
 m[DarkFountain] = {
