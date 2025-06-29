@@ -14,6 +14,7 @@ function MouseMenuComponent:isHovered(mousex, mousey)
     local hierarchy_size = -1
     local object = nil
     local stage = self.stage
+    local local_mx, local_my
     if stage then
         local objects = stage:getObjects(MouseMenuComponent)
         Object.startCache()
@@ -28,13 +29,18 @@ function MouseMenuComponent:isHovered(mousex, mousey)
                         hierarchy_size = new_hierarchy_size
                         object_size = new_object_size
                         object = instance
+                        local_mx, local_my = mx, my
                     end
                 end
             end
         end
         Object.endCache()
     end
-    return object == self
+    if object == self then
+        return true, local_mx, local_my
+    else
+        return false
+    end
 end
 
 function MouseMenuComponent:update()
