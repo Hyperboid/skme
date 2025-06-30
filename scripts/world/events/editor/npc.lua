@@ -23,8 +23,6 @@ function EditorNPC:setActor(actor)
     self.width = actor:getWidth()
     self.height = actor:getHeight()
 
-    self.collider = Hitbox(self, self.actor:getHitbox())
-
     if self.sprite then
         self.sprite:remove()
     end

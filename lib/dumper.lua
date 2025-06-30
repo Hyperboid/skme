@@ -10,6 +10,7 @@ end
 
 local function dump(o, indent)
     indent = indent or 1
+    assert(not isClass(o), "Can't dump a class!")
     if type(o) == 'table' then
         local s = '{'
         if next(o) ~= nil then

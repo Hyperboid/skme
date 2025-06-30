@@ -14,11 +14,4 @@ function EditorCollisionLayer:getDrawColor()
     return r, g, b, a * (Editor.active_layer == self and 1 or 0.2)
 end
 
-function EditorCollisionLayer:draw()
-    super.draw(self)
-    for _, shape in ipairs(self.shapes) do
-        self:drawShape(shape)
-    end
-end
-
 return EditorCollisionLayer

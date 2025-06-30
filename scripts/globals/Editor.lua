@@ -37,10 +37,46 @@ function Editor:enter(previous_state)
     self.state_manager = StateManager('TRANSITION', self, true)
     self.objects_editor = EditorObjects() ---@type EditorObjects
     self.tiles_editor = EditorTiles() ---@type EditorTiles
+    self.shapes_editor = EditorShapes() ---@type EditorTiles
     self.state_manager:addState("OBJECTS", self.objects_editor)
     self.state_manager:addState("TILES", self.tiles_editor)
+    self.state_manager:addState("SHAPES", self.shapes_editor)
     self.inspector:onSelectObject(self.active_layer)
     Kristal.showCursor()
+    self.undos = {n = 1, self.world.map:save()}
+end
+
+function Editor:endAction()
+    self:_saveUndo()
+end
+
+---@private
+function Editor:_saveUndo()
+    self.undos.n = self.undos.n + 1
+    self.undos[self.undos.n] = Utils.copy(self.world.map:save(), true)
+    self.undos[self.undos.n + 1] = nil
+end
+
+function Editor:redo()
+    local data = self.undos[self.undos.n + 1]
+    if not data then return false end
+    self.undos.n = self.undos.n + 1
+    local selected_layer_id = Utils.getIndex(self.world.map.layers, self.active_layer)
+    Registry.registerMapData(self.world.map.id, data)
+    self.world:loadMap(self.world.map.id)
+    self:selectLayer(self.world.map.layers[selected_layer_id])
+    return true
+end
+
+function Editor:undo()
+    local data = self.undos[self.undos.n - 1]
+    if not data then return false end
+    self.undos.n = self.undos.n - 1
+    local selected_layer_id = Utils.getIndex(self.world.map.layers, self.active_layer)
+    Registry.registerMapData(self.world.map.id, data)
+    self.world:loadMap(self.world.map.id)
+    self:selectLayer(self.world.map.layers[selected_layer_id])
+    return true
 end
 
 function Editor:setMargins(left, top, right, bottom)
@@ -57,6 +93,8 @@ function Editor:selectLayer(layer)
         self:setState("OBJECTS")
     elseif self.active_layer:includes(EditorTileLayer) then
         self:setState("TILES")
+    elseif self.active_layer:includes(EditorShapeLayer) then
+        self:setState("SHAPES")
     end
 end
 

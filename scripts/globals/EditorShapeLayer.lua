@@ -3,7 +3,12 @@ local EditorShapeLayer, super = Class("EditorLayer")
 
 function EditorShapeLayer:init(data)
     super.init(self, data)
-    self.shapes = data.shapes or {}
+    self.shapes = {}
+    for index, shapedata in ipairs(data and data.shapes or {}) do
+        local shape = EditorShape(shapedata.name, nil, shapedata)
+        table.insert(self.shapes, shape)
+        self:addChild(shape)
+    end
     
 end
 
@@ -14,7 +19,11 @@ function EditorShapeLayer:mouseIntersectsShape(shape, mx, my)
     if shape.shape == "rectangle" then
         return CollisionUtil.pointRect(mx, my, shape.x - 2, shape.y - 2, shape.width + 4, shape.height + 4)
     elseif shape.shape == "polygon" then
-        return CollisionUtil.rectPolygon(mx-1, my-1, 2, 2, shape.polygon)
+        local repacked = {}
+        for index, value in ipairs(shape.polygon) do
+            repacked[index] = {value.x, value.y}
+        end
+        return CollisionUtil.rectPolygon(mx-1, my-1, 2, 2, repacked)
     end
 end
 
@@ -31,37 +40,12 @@ function EditorShapeLayer:getHoveredShape(mx, my)
     end
 end
 
-function EditorShapeLayer:drawShape(shape)
-    local oldr, oldg, oldb, olda = love.graphics.getColor()
-    if shape.shape == "rectangle" then
-        love.graphics.rectangle("line", shape.x, shape.y, shape.width, shape.height)
-        Draw.setColor(oldr, oldg, oldb, olda / 2)
-        love.graphics.rectangle("fill", shape.x, shape.y, shape.width, shape.height)
-    elseif shape.shape == "polygon" then
-        love.graphics.push()
-        love.graphics.translate(shape.x, shape.y)
-        local unpacked = {}
-        for _,point in ipairs(shape.polygon) do
-            table.insert(unpacked, point.x)
-            table.insert(unpacked, point.y)
-        end
-        love.graphics.polygon("line", unpacked)
-        Draw.setColor(oldr, oldg, oldb, olda / 2)
-        local triangles = love.math.triangulate(unpacked)
-        for _,triangle in ipairs(triangles) do
-            love.graphics.polygon("fill", triangle)
-        end
-        love.graphics.pop()
-    else
-        love.graphics.setColor(1,0,0)
-        love.graphics.points(shape.x, shape.y)
-    end
-    Draw.setColor(oldr, oldg, oldb, olda)
-end
-
 function EditorShapeLayer:save()
     local data = super.save(self)
-    data.shapes = self.shapes
+    data.shapes = {}
+    for index, value in pairs(self.shapes) do
+        data.shapes[index] = value:save()
+    end
     return data
 end
 

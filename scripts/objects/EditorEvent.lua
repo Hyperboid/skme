@@ -87,8 +87,14 @@ function EditorEvent:registerProperties(inspector)
 end
 
 function EditorEvent:draw()
-    local alpha = Editor.active_layer == self.parent and 1 or 0.2
     super.draw(self)
+    Draw.setColor(1,0,1)
+    self:drawOverlay()
+end
+function EditorEvent:drawOverlay(force)
+    if not force and Gamestate.current() ~= Editor then return end
+    local alpha = Editor.active_layer == self.parent and 1 or 0.2
+    local r, g, b = love.graphics.getColor()
     love.graphics.push()
     love.graphics.scale(1 / self.scale_x)
     love.graphics.setFont(Assets.getFont("main",16))
@@ -97,12 +103,28 @@ function EditorEvent:draw()
     love.graphics.printf(self.type or "", 2,0,(self.width * self.scale_x) - 4)
     love.graphics.printf(self.type or "", 1,-1,(self.width * self.scale_x) - 4)
     love.graphics.printf(self.type or "", 1,1,(self.width * self.scale_x) - 4)
-    Draw.setColor(1,.5,1,alpha)
+    Draw.setColor(r+.5,g+.5,b+.5,alpha)
     love.graphics.printf(self.type or "", 1,0,(self.width * self.scale_x) - 4)
-    Draw.setColor(1,0,1,alpha)
+    Draw.setColor(r, g, b, alpha)
     love.graphics.pop()
     love.graphics.setLineWidth(2 / self.scale_x)
-    love.graphics.rectangle("line", -1, -1, self.width+2, self.height+2)
+    if self.collider then
+        if self.collider:includes(PolygonCollider) then
+            local unpacked = {}
+            for _,point in ipairs(self.collider.points) do
+                table.insert(unpacked, point[1])
+                table.insert(unpacked, point[2])
+            end
+            table.insert(unpacked, unpacked[1])
+            table.insert(unpacked, unpacked[2])
+            love.graphics.line(unpack(unpacked))
+            Draw.setColor(1, 1, 1, 1)
+        else
+            self.collider:draw(r,g,b)
+        end
+    else
+        love.graphics.rectangle("line", -1, -1, self.width+2, self.height+2)
+    end
 end
 
 function EditorEvent:getDebugRectangle()
@@ -124,7 +146,15 @@ function EditorEvent:save()
         height = self.height,
         properties = self.properties and Utils.copy(self.properties, true),
         id = self.object_id,
+        shape = "rectangle",
     }
+    if self.collider and self.collider:includes(PolygonCollider) then
+        data.shape = "polygon"
+        data.polygon = {}
+        for _, p in ipairs(self.collider.points) do
+            table.insert(data.polygon, {x = p[1], y = p[2]})
+        end
+    end
     if self.meta and self.meta.point then
         data.width = 0
         data.height = 0

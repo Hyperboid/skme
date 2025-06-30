@@ -3,7 +3,7 @@
 local CheckboxMenuItemComponent, super = Class(AbstractMenuItemComponent)
 
 function CheckboxMenuItemComponent:init(options)
-    super.init(self, FillSizing(), FixedSizing(20), nil, options)
+    super.init(self, FillSizing(), FixedSizing(22), nil, options)
     options = options or {}
     self.options = options
     self.getter = self.options.getter
@@ -57,10 +57,9 @@ function CheckboxMenuItemComponent:draw()
     love.graphics.setLineStyle("rough")
     love.graphics.setLineWidth(2)
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.rectangle("line", self.width - 32, 0, 16, 16)
+    love.graphics.rectangle("line", self.width - 32, 5, 16, 16)
     if self.getter() then
-        
-        love.graphics.rectangle("fill", self.width - 29, 3, 10, 10)
+        love.graphics.rectangle("fill", self.width - 29, 8, 10, 10)
     end
 end
 

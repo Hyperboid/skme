@@ -8,6 +8,7 @@ function EditorWorld:init(editor)
     super.init(self, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
     self.editor = assert(editor, "Need to pass editor (self) to EditorWorld!")
     self.player = Character(Game.party[1]:getActor(), Game.world.player:getPosition())
+    self.player.persistent = true
     self.player:setFacing(Game.world.player.facing)
     self.player:setLayer(50)
     self.camera = EditorCamera(self, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, true)
@@ -28,6 +29,12 @@ function EditorWorld:fullDraw(...)
 end
 
 function EditorWorld:loadMap(map)
+    for _, value in ipairs(self.children) do
+        if not value.persistent then
+            value:remove()
+        end
+    end
+    self:updateChildList()
     ---@type EditorMap
     self.map = isClass(map) and map or (type(map) == "table" and EditorMap(self, map)) or Registry.createMap(map)
     assert(self.map:includes(EditorMap))

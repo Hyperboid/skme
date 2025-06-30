@@ -43,26 +43,30 @@ function EditorObjects:detectObject(x, y)
     return object
 end
 
+function EditorObjects:openContextMenu(obj)
+    Editor.context = ContextMenu(Utils.getClassName(obj))
+    Editor.context:addMenuItem("Duplicate", "Makes a copy of this object at the same position.", function ()
+        local data = Utils.copy(obj:save(), true)
+        local layer = obj.parent--[[@as EditorObjectLayer]]
+        local newobj =  layer:loadObject(data.type, data)
+        table.insert(layer.objects, newobj)
+        layer:addChild(newobj)
+    end)
+    Editor.context:addMenuItem("Delete", "Removes this object.", function ()
+        local layer = obj.parent--[[@as EditorObjectLayer?]]
+        if not layer then return end
+        layer.objects[Utils.getKey(layer.objects, obj)] = nil
+        obj:remove()
+    end)
+    Editor.context:setPosition(Input.getCurrentCursorPosition())
+    Editor.stage:addChild(Editor.context)
+end
+
 function EditorObjects:onMousePressed(x, y, button)
     local obj = self:detectObject(x, y)
     self:selectObject(obj)
     if obj and button == 2 then
-        Editor.context = ContextMenu(Utils.getClassName(obj))
-        Editor.context:addMenuItem("Duplicate", "Makes a copy of this object at the same position.", function ()
-            local data = Utils.copy(obj:save(), true)
-            local layer = obj.parent--[[@as EditorObjectLayer]]
-            local newobj =  layer:loadObject(data.type, data)
-            table.insert(layer.objects, newobj)
-            layer:addChild(newobj)
-        end)
-        Editor.context:addMenuItem("Delete", "Removes this object.", function ()
-            local layer = obj.parent--[[@as EditorObjectLayer?]]
-            if not layer then return end
-            layer.objects[Utils.getKey(layer.objects, obj)] = nil
-            obj:remove()
-        end)
-        Editor.context:setPosition(Input.getCurrentCursorPosition())
-        Editor.stage:addChild(Editor.context)
+        self:openContextMenu(obj)
     elseif obj then
         self.grabbing = true
         local screen_x, screen_y = obj:getScreenPos()
@@ -99,6 +103,9 @@ function EditorObjects:update()
 end
 
 function EditorObjects:onMouseReleased()
+    if self.grabbing then
+        Editor:endAction()
+    end
     self.grabbing = false
 end
 
