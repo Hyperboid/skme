@@ -118,6 +118,14 @@ function EditorEvent:drawOverlay(force)
             table.insert(unpacked, unpacked[1])
             table.insert(unpacked, unpacked[2])
             love.graphics.line(unpack(unpacked))
+            if (Editor.objects_editor.state == "POINTS" and Editor.objects_editor.selected_object == self)
+            or (Editor.shapes_editor.state == "POINTS" and Editor.shapes_editor.selected_object == self)
+             then
+                love.graphics.setPointSize(10)
+                for _,point in ipairs(self.collider.points) do
+                    love.graphics.points(point[1], point[2])
+                end
+            end
             Draw.setColor(1, 1, 1, 1)
         else
             self.collider:draw(r,g,b)

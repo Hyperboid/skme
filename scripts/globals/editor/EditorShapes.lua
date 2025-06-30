@@ -30,11 +30,13 @@ end
 function EditorShapes:onEnter(prev_state)
     -- self.browser:setParent(Editor.stage)
     Editor.inspector:setHeight(SCREEN_HEIGHT - 20)
+    self.state = "MAIN"
 end
 
 function EditorShapes:onLeave(next_state)
     -- self.browser:setParent()
     self:selectObject()
+    self.state = "MAIN"
 end
 
 return EditorShapes

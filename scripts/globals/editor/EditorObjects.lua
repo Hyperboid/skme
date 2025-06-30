@@ -8,9 +8,15 @@ end
 function EditorObjects:onEnter(prev_state)
     self.browser:setParent(Editor.stage)
     Editor.inspector:setHeight(SCREEN_HEIGHT - 20)
+    ---@type "MAIN"|"POINTS"
+    self.state = "MAIN"
 end
 
 function EditorObjects:onLeave(next_state)
+    if self.state == "POINTS" then
+        Editor:endAction()
+    end
+    self.state = "MAIN"
     self.browser:setParent()
     self:selectObject()
 end
@@ -71,16 +77,66 @@ function EditorObjects:openContextMenu(obj)
     Editor.stage:addChild(Editor.context)
 end
 
-function EditorObjects:onMousePressed(x, y, button)
+function EditorObjects:onMousePressed(x, y, button, touch, presses)
+    if self.state == "POINTS" then
+        self:onMousePressedPoints(x, y, button, touch, presses)
+        return
+    end
     local obj = self:detectObject(x, y)
     self:selectObject(obj)
     if obj and button == 2 then
         self:openContextMenu(obj)
     elseif obj then
+        if presses == 2 and obj.collider and obj.collider:includes(PolygonCollider) then
+            self.state = "POINTS"
+            return
+        end
         self.grabbing = true
         local screen_x, screen_y = obj:getScreenPos()
         self.grab_offset_x = x - screen_x
         self.grab_offset_y = y - screen_y
+    end
+end
+
+function EditorObjects:updateSelectedObjectPoints()
+    self.points_colliders = {}
+    self.lines_colliders = {}
+    local selected_object_collider = self.selected_object.collider--[[@as PolygonCollider]]
+    for _, value in pairs(selected_object_collider.points) do
+        self.points_colliders[value] = PointCollider(self.selected_object, value[1], value[2])
+    end
+    for i = 1, #selected_object_collider.points do
+        local line = {selected_object_collider.points[i], selected_object_collider.points[Utils.clampWrap(i+1, #selected_object_collider.points)]}
+        local point = {(line[1][1] + line[2][1])/2, (line[1][2] + line[2][2])/2}
+        self.lines_colliders[i] = {point=point, col=LineCollider(self.selected_object, line[1][1], line[1][2], line[2][1], line[2][2])}
+    end
+end
+
+function EditorObjects:onMousePressedPoints(x, y, button, touch, presses)
+    self:updateSelectedObjectPoints()
+    local p = 10
+    local mouse_collider = Hitbox(Editor.stage, (x)-p, (y)-p, p+p, p+p)
+    for point, collider in pairs(self.points_colliders) do
+        if mouse_collider:collidesWith(collider) then
+            if button == 2 and #self.selected_object.collider.points > 2 then
+                Utils.removeFromTable(self.selected_object.collider.points, point)
+                return
+            end
+            self.selected_point = point
+            self.grabbing = true
+            self.grab_offset_x = x-point[1]
+            self.grab_offset_y = y-point[2]
+            return
+        end
+    end
+
+    if presses == 2 then
+        for index, line_collider in ipairs(self.lines_colliders) do
+            if mouse_collider:collidesWith(line_collider.col) then
+                table.insert(self.selected_object.collider.points, index+1, line_collider.point)
+                return
+            end
+        end
     end
 end
 
@@ -96,6 +152,9 @@ function EditorObjects:selectObject(obj)
 end
 
 function EditorObjects:update()
+    if self.state == "POINTS" then
+        return self:updatePoints()
+    end
     if self.grabbing and self.selected_object then
         local x, y = Input.getCurrentCursorPosition()
         self.selected_object:setScreenPos(x - self.grab_offset_x, y - self.grab_offset_y)
@@ -111,8 +170,28 @@ function EditorObjects:update()
     end
 end
 
+function EditorObjects:updatePoints()
+    if self.grabbing and self.selected_point then
+        local x, y = Input.getCurrentCursorPosition()
+        self.selected_point[1], self.selected_point[2] = x - self.grab_offset_x, y - self.grab_offset_y
+        local roundx, roundy = 1,1
+        if Input.ctrl() then
+            roundx, roundy = Editor.world.map.tile_width, Editor.world.map.tile_height
+            if Input.shift() then
+                roundx, roundy = roundx / 2, roundy / 2
+            end
+        end
+        self.selected_point[1] = Utils.round(self.selected_point[1], roundx)
+        self.selected_point[2] = Utils.round(self.selected_point[2], roundy)
+    end
+    if Input.pressed("confirm") then
+        self.state = "MAIN"
+        Editor:endAction()
+    end
+end
+
 function EditorObjects:onMouseReleased()
-    if self.grabbing then
+    if self.grabbing and self.state == "MAIN" then
         Editor:endAction()
     end
     self.grabbing = false
