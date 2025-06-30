@@ -66,6 +66,7 @@ function FieldMenuItemComponent:onSelected()
         if self.getter then
             self.input[1] = tostring(self.getter())
         end
+        Editor:endAction()
         self:setUnfocused()
         TextInput.endInput()
         Input.clear("return")

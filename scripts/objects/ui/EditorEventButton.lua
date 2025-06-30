@@ -34,6 +34,7 @@ function EditorEventButton:onSelected()
     event:setPosition(Editor.world.player:getPosition())
     layer:addObject(event)
     Editor.objects_editor:selectObject(event)
+    Editor:endAction()
 end
 
 function EditorEventButton:onHovered(hovered)

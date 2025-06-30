@@ -58,12 +58,14 @@ function EditorObjects:openContextMenu(obj)
         local newobj =  layer:loadObject(data.type, data)
         table.insert(layer.objects, newobj)
         layer:addChild(newobj)
+        Editor:endAction()
     end)
     Editor.context:addMenuItem("Delete", "Removes this object.", function ()
         local layer = obj.parent--[[@as EditorObjectLayer?]]
         if not layer then return end
         layer.objects[Utils.getKey(layer.objects, obj)] = nil
         obj:remove()
+        Editor:endAction()
     end)
     Editor.context:setPosition(Input.getCurrentCursorPosition())
     Editor.stage:addChild(Editor.context)
