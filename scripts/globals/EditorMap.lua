@@ -189,7 +189,6 @@ function EditorMap:loadHitboxes(layer)
     for _,v in ipairs(layer.shapes) do
         v = v:save()
         local hitbox = Utils.colliderFromShape(self.world, v, v.x, v.y, v.properties)
-        print(Utils.dump(v), Utils.dump(hitbox))
         if hitbox then
             table.insert(hitboxes, hitbox)
             if v.name then

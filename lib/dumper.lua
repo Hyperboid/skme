@@ -10,7 +10,9 @@ end
 
 local function dump(o, indent)
     indent = indent or 1
-    assert(not isClass(o), "Can't dump a class!")
+    if isClass(o) then
+        error("Attempt to dump class "..Utils.getClassName(o))
+    end
     if type(o) == 'table' then
         local s = '{'
         if next(o) ~= nil then

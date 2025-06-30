@@ -43,7 +43,10 @@ function Editor:enter(previous_state)
     self.state_manager:addState("SHAPES", self.shapes_editor)
     self.inspector:onSelectObject(self.active_layer)
     Kristal.showCursor()
-    self.undos = {n = 1, self.world.map:save()}
+    if (not self.undos) or (self.last_map ~= self.world.map.id) then
+        self.last_map = self.world.map.id
+        self.undos = {n = 1, Utils.copy(self.world.map:save(), true)}
+    end
 end
 
 function Editor:endAction()
@@ -55,6 +58,10 @@ function Editor:_saveUndo()
     self.undos.n = self.undos.n + 1
     self.undos[self.undos.n] = Utils.copy(self.world.map:save(), true)
     self.undos[self.undos.n + 1] = nil
+    if self.undos.n > 500 then
+        self.undos.n = self.undos.n - 1
+        table.remove(self.undos, 1)
+    end
 end
 
 function Editor:redo()
@@ -162,16 +169,20 @@ end
 
 
 function Editor:onKeyPressed(key, is_repeat)
-    if is_repeat then return end
     if self.state == "TRANSITION" or self.state == "TRANSITIONOUT" then return end
     if Input.ctrl() then
-        if Input.ctrl() and key == "e" then
+        if not is_repeat and key == "e" then
             self:playtest()
-        elseif Input.ctrl() and key == "s" then
+        elseif not is_repeat and key == "s" then
             self:saveData()
             Input.clear(key, true)
+        elseif key == "z" and not Input.shift() then
+            Assets.stopAndPlaySound(self:undo() and "noise" or "ui_cant_select")
+        elseif key == "y" or key == "z" then
+            Assets.stopAndPlaySound(self:redo() and "noise" or "ui_cant_select")
         end
     end
+    if is_repeat then return end
     if key == "pageup" then
         local cur_index = Utils.getIndex(self.world.map.layers, self.active_layer)
         local next_index = Utils.clampWrap(cur_index + 1, #self.world.map.layers)

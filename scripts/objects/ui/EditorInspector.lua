@@ -38,7 +38,7 @@ function EditorInspector:onSelectObject(object)
     local comp = self.menu:getComponents()
     if #comp > 1 then
         comp[1]:remove()
-        self.menu:reflow()
+        self.container:update()
     end
 end
 

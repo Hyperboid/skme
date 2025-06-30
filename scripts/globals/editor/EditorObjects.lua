@@ -24,14 +24,21 @@ function EditorObjects:detectObject(x, y)
 
     local objects = Editor.active_layer and Editor.active_layer.children or {}
     Object.startCache()
+    local mouse_collider = Hitbox(Editor.stage, (x)-2, (y)-2, 4, 4)
     for _, instance in ipairs(objects) do
         if (instance:includes(EditorEvent) or instance["USE_IN_EDITOR"]) and instance:isFullyVisible() then
             local mx, my = instance:getFullTransform():inverseTransformPoint(x, y)
             local rect = instance:getDebugRectangle() or { 0, 0, instance.width, instance.height }
-            if mx >= rect[1] and mx < rect[1] + rect[3] and my >= rect[2] and my < rect[2] + rect[4] then
+            if (instance.collider) or (mx >= rect[1] and mx < rect[1] + rect[3] and my >= rect[2] and my < rect[2] + rect[4]) then
                 local new_hierarchy_size = #instance:getHierarchy()
                 local new_object_size = math.sqrt(rect[3] * rect[4])
-                if new_hierarchy_size > hierarchy_size or (new_hierarchy_size == hierarchy_size and new_object_size < object_size) then
+                if instance.collider then
+                    if instance.collider:collidesWith(mouse_collider) then
+                        hierarchy_size = new_hierarchy_size
+                        object_size = new_object_size
+                        object = instance
+                    end
+                elseif new_hierarchy_size > hierarchy_size or (new_hierarchy_size == hierarchy_size and new_object_size < object_size) then
                     hierarchy_size = new_hierarchy_size
                     object_size = new_object_size
                     object = instance
