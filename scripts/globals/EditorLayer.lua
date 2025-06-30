@@ -3,6 +3,7 @@
 local EditorLayer, super = Class(Object)
 
 EditorLayer.DEFAULT_NAME = "Layer"
+EditorLayer.TYPE = "someone forgot to set the TYPE field when programming the layer..."
 
 function EditorLayer:init(data)
     super.init(self)
@@ -27,6 +28,7 @@ function EditorLayer:save()
     local data = {
         name = self.name,
         visible = self.visible,
+        type = self.TYPE,
     }
     self:onSave(data)
     return data

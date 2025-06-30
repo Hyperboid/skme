@@ -3,6 +3,8 @@ assert(CLASS_NAME_GETTER"EditorLayer", {included = "EditorLayer"})
 ---@class EditorTileLayer : EditorLayer
 local EditorTileLayer, super = Class({TileLayer, CLASS_NAME_GETTER"EditorLayer"})
 
+EditorTileLayer.TYPE = "tilelayer"
+
 function EditorTileLayer:init(map, data)
     super.init(self, map, data)
     self.data = data

@@ -56,6 +56,9 @@ function EditorMap:createLayer(ltype, data)
     assert(self.tile_width)
     if ltype:lower() == "objectgroup" then
         return EditorObjectLayer(data)
+    elseif ltype:lower() == "collision" then
+        local layer = EditorCollisionLayer(data)
+        return layer
     elseif ltype:lower() == "tilelayer" then
         local layer = EditorTileLayer(self, data)
         table.insert(self.tile_layers, layer)
@@ -171,7 +174,30 @@ function EditorMap:loadLayer(layer)
         local reallayer = TileLayer(self, layer.data)
         reallayer.layer = self.next_layer
         reallayer:setParent(self.world)
+    elseif layer:includes(EditorCollisionLayer) then
+        ---@cast layer EditorCollisionLayer
+        Utils.merge(self.collision, self:loadHitboxes(layer))
     end
+end
+
+---@param layer EditorCollisionLayer
+function EditorMap:loadHitboxes(layer)
+    if not isClass(layer) then
+        return super.loadHitboxes(self, layer)
+    end
+    local hitboxes = {}
+    for _,v in ipairs(layer.shapes) do
+        local hitbox = Utils.colliderFromShape(self.world, v, v.x, v.y, v.properties)
+        if hitbox then
+            table.insert(hitboxes, hitbox)
+
+            if v.name then
+                self.hitboxes_by_name[v.name] = self.hitboxes_by_name[v.name] or {}
+                table.insert(self.hitboxes_by_name[v.name], hitbox)
+            end
+        end
+    end
+    return hitboxes
 end
 
 ---@param layer EditorLayer

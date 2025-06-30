@@ -8,7 +8,9 @@ end
 function ScrollFillSizing:getWidth()
     ---@type Component
     local outer = self.parent.parent
-    return math.max(self.parent.parent:getTotalWidth(), 20) - (outer.margins[1] + outer.margins[3])
+    local padx = (outer.padding[1] + outer.padding[3]) + (self.parent.margins[1] + self.parent.margins[3])
+    local width = math.max(self.parent.parent.width - padx)
+    return width
 end
 
 function ScrollFillSizing:getHeight()
@@ -16,7 +18,6 @@ function ScrollFillSizing:getHeight()
     local outer = self.parent.parent
     local pady = (outer.padding[2] + outer.padding[4]) + (self.parent.margins[2] + self.parent.margins[4])
     local height = math.max(self.parent.parent.height - pady)
-    print('sfs height', height, outer.height)
     return height
 end
 

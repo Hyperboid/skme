@@ -271,6 +271,8 @@ function Editor:drawLayerList()
             icon = Assets.getTexture("ui/editor/layer/tiles")
         elseif layer:includes(EditorObjectLayer) then
             icon = Assets.getTexture("ui/editor/layer/objects")
+        elseif layer.ICON then
+            icon = Assets.getTexture(layer.ICON)
         end
         if self.active_layer == layer then
             love.graphics.rectangle("fill", -2, -2, 20, 20)

@@ -2,6 +2,7 @@
 local EditorObjectLayer, super = Class("EditorLayer")
 
 EditorObjectLayer.DEFAULT_NAME = "Object Layer"
+EditorObjectLayer.TYPE = "objectgroup"
 
 function EditorObjectLayer:init(data)
     super.init(self, data)

@@ -12,10 +12,9 @@ function EditorObjectBrowser:refresh()
     self.menu = MouseMenuComponent(ScrollFillSizing(), ScrollFillSizing())
     self.menu:setLayout(GridLayout())
     self.menu:setScrollbar(ScrollbarComponent())
-    self.menu.scrollbar.margins[1] = -8
     self.menu.overflow = "scroll"
     self.menu:setScrollType("scroll")
-    self.wrapper:setMargins(0,0,36,0)
+    self.wrapper:setPadding(0,0,8,0)
 
     ---@type table<string,Event>
     self.events = {}
