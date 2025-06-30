@@ -36,4 +36,46 @@ function EditorWorld:loadMap(map)
     self.editor.active_layer = self.map.layers[1]
 end
 
+function EditorWorld:resizeMapTo(width, height)
+    ---@type EditorTileLayer[]
+    local tile_layers = Utils.filter(self.map.layers, function (v) return v:includes(EditorTileLayer) end)
+    ---@type table<EditorTileLayer, integer[][]>
+    local tile_datas = {}
+    for _, layer in ipairs(tile_layers) do
+        tile_datas[layer] = {}
+        for i = 1, #layer.tile_data do
+            local x = ((i - 1) % layer.map_width) + 1
+            local y = math.floor((i-1) / layer.map_width)
+            tile_datas[layer][y] = tile_datas[layer][y] or {}
+            tile_datas[layer][y][x] = layer.tile_data[i]
+        end
+        layer.tile_data = {}
+        layer.map_width = width or self.map.width
+        layer.data.width = width or self.map.width
+        layer.width = self.map.tile_width * layer.map_width
+        layer.height = self.map.tile_height * layer.map_height
+    end
+    self.map.width = width or self.map.width
+    self.map.height = height or self.map.height
+
+    for layer, rows in pairs(tile_datas) do
+        ---@cast layer EditorTileLayer
+        layer:setTile(0, 0, 0)
+        for y, row in ipairs(rows) do
+            for x, gid in ipairs(row) do
+                if x <= self.map.width then
+                    local index = x + (y * layer.map_width)
+                    layer:setTile(x-1, y, gid or 0)
+                end
+            end
+        end
+        for i = 1, self.map.width * self.map.height do
+            layer.tile_data[i] = layer.tile_data[i] or 0
+        end
+        layer.canvas = love.graphics.newCanvas(layer.map_width * self.map.tile_width, layer.map_height * self.map.tile_height)
+    end
+    self.width = self.map.width * self.map.tile_width
+    self.height = self.map.height * self.map.tile_height
+end
+
 return EditorWorld

@@ -44,7 +44,15 @@ end
 
 function EditorTileLayer:save()
     -- not much else to do here?
-    return Utils.mergeMultiple(self.data, super.save(self), {type = "tilelayer"})
+    local data = super.save(self)
+    data.type = "tilelayer"
+    data.encoding = "lua"
+    data.opacity = 1
+    data.data = self.tile_data
+    data.parallaxx = self.parallax_x
+    data.parallaxy = self.parallax_y
+    data.properties = self.properties or {}
+    return data
 end
 
 function EditorTileLayer:getContextOptions(context)
