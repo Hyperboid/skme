@@ -21,9 +21,9 @@ function Editor:enter(previous_state)
     self.stage:addChild(self.world)
     self.inspector = EditorInspector(self)
     self.inspector.origin_x = 1
+    self.inspector.layer = 10
     self.menubar = EditorMenubar()
     self.menubar.origin_y = 1
-    self.inspector.visible = false
     self.timer:tween(0.25, self, {
         music_filter = 1,
         margins = {200, 20, 20, 120},
@@ -39,6 +39,7 @@ function Editor:enter(previous_state)
     self.tiles_editor = EditorTiles() ---@type EditorTiles
     self.state_manager:addState("OBJECTS", self.objects_editor)
     self.state_manager:addState("TILES", self.tiles_editor)
+    self.inspector:onSelectObject(self.active_layer)
     Kristal.showCursor()
 end
 
@@ -51,6 +52,7 @@ function Editor:selectLayer(layer)
     self.active_layer = layer
     self:setState("INVALID")
     if not self.active_layer then return end
+    self.inspector:onSelectObject(self.active_layer)
     if self.active_layer:includes(EditorObjectLayer) then
         self:setState("OBJECTS")
     elseif self.active_layer:includes(EditorTileLayer) then

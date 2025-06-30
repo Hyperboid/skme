@@ -55,6 +55,16 @@ function EditorTileLayer:save()
     return data
 end
 
+function EditorTileLayer:registerProperties(inspector)
+    super.registerProperties(self, inspector)
+    inspector:addToMenu(NumberInputMenuItemComponent({
+        ref = {self, "parallax_x"},
+    }))
+    inspector:addToMenu(NumberInputMenuItemComponent({
+        ref = {self, "parallax_y"},
+    }))
+end
+
 function EditorTileLayer:getContextOptions(context)
     context = EditorLayer.getContextOptions(self, context)
     return context

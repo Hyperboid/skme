@@ -16,6 +16,13 @@ function EditorLayer:editorLayerInit(data)
     end
 end
 
+---@param inspector EditorInspector
+function EditorLayer:registerProperties(inspector)
+    inspector:addToMenu(FieldMenuItemComponent({
+        ref = {self, "name"}, name = "Name"
+    }))
+end
+
 function EditorLayer:save()
     local data = {
         name = self.name,
@@ -42,6 +49,10 @@ function EditorLayer:getContextOptions(context)
     end)
     context:addMenuItem("Mark as party layer", "Mark this layer as the one where the party will appear.", function ()
         Editor.world.map.party_layer = self
+    end)
+    context:addMenuItem("Properties", "Open layer's properties in the inspector", function ()
+        Editor.inspector.visible = true
+        Editor.inspector:onSelectObject(self)
     end)
     return context
 end

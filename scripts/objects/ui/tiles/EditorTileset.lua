@@ -87,8 +87,6 @@ function EditorTileset:update()
             starty, endy = endy, starty
         end
         local clipboard = {}
-        print("start",startx, starty)
-        print("end",endx, endy)
         for y = starty, endy do
             local row = {}
             for x = startx, endx do
@@ -96,8 +94,6 @@ function EditorTileset:update()
             end
             table.insert(clipboard, row)
         end
-        print("clipboard",#clipboard, #clipboard[1])
-        print()
         Editor.tiles_editor:setClipboard(clipboard)
     end
 end

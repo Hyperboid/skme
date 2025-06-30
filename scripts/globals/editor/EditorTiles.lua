@@ -8,7 +8,7 @@ local EditorTiles, super = Class("SKMEState")
 
 function EditorTiles:init()
     self.browser = EditorTileBrowser()
-    self.tileset = EditorTileset("castle", 0, 20)
+    self.tileset = EditorTileset("castle", 0, SCREEN_HEIGHT - 220)
     self.state = "DRAW"
     self:setActiveTile(self.tileset.tileset, 1)
 end
@@ -16,6 +16,7 @@ end
 function EditorTiles:onEnter(prev_state)
     self.browser:setParent(Editor.stage)
     self.tileset:setParent(Editor.stage)
+    Editor.inspector:setHeight(220)
 end
 
 function EditorTiles:onLeave(next_state)

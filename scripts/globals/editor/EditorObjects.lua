@@ -7,13 +7,12 @@ end
 
 function EditorObjects:onEnter(prev_state)
     self.browser:setParent(Editor.stage)
-    Editor.inspector.visible = true
+    Editor.inspector:setHeight(SCREEN_HEIGHT - 20)
 end
 
 function EditorObjects:onLeave(next_state)
     self.browser:setParent()
     self:selectObject()
-    Editor.inspector.visible = false
 end
 
 ---@return EditorEvent?
@@ -80,7 +79,7 @@ function EditorObjects:selectObject(obj)
     if self.selected_object then
         self.selected_object:addFX(OutlineFX({1,1,1,0.8}), "editor_vfx")
     end
-    Editor.inspector:onSelectObject(obj)
+    Editor.inspector:onSelectObject(obj or Editor.active_layer)
 end
 
 function EditorObjects:update()

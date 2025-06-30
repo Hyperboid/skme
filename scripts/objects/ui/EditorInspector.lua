@@ -13,7 +13,7 @@ end
 function EditorInspector:resetUI()
     if self.container then self.container:remove() end
     self.container = Component(FixedSizing(200), FixedSizing(SCREEN_HEIGHT - 20))
-    self.menu = MouseMenuComponent(FixedSizing(200 - 32), FixedSizing(SCREEN_HEIGHT - 32 - 20))
+    self.menu = MouseMenuComponent(FixedSizing(200 - 32), ScrollFillSizing())
     self.menu.overflow = 'scroll'
     self.menu:setLayout(VerticalLayout())
     self.menu:setMargins(16)
@@ -44,6 +44,14 @@ end
 
 function EditorInspector:addToMenu(component)
     self.menu:addChild(component)
+end
+
+function EditorInspector:setHeight(height)
+    self.height = height
+    self.container.y_sizing.height = height - (
+        self.container.margins[2] + self.container.margins[4]
+        + self.menu.padding[2] + self.menu.padding[4]
+    )
 end
 
 

@@ -23,6 +23,32 @@ function EditorMap:init(world, data)
     end
 end
 
+---@param inspector EditorInspector
+function EditorMap:registerProperties(inspector)
+    inspector:addToMenu(FieldMenuItemComponent({
+        ref = {self.properties, "name"}, name = "Name"
+    }))
+    inspector:addToMenu(CompletionFieldMenuItemComponent({
+        ref = {self.properties, "music"}, name = "Music", completions = Assets.data.music
+    }))
+    inspector:addToMenu(CompletionFieldMenuItemComponent({
+        ref = {self.properties, "border"}, name = "Border", completions = function ()
+            local borders = Utils.getFilesRecursive("assets/sprites/borders", ".png")
+            if Mod then
+                Utils.merge(borders, Utils.getFilesRecursive(Mod.info.path.."/assets/sprites/borders", ".png"))
+                for _,mod_lib in pairs(Mod.libs) do
+                    Utils.merge(borders, Utils.getFilesRecursive(mod_lib.info.path.."/assets/sprites/borders", ".png"))
+                end
+            end
+
+            for key, value in pairs(Registry.borders) do
+                table.insert(borders, key)
+            end
+            return Utils.removeDuplicates(borders)
+        end
+    }))
+end
+
 ---@param ltype string
 ---@param data table
 ---@return EditorLayer

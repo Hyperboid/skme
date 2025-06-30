@@ -33,6 +33,9 @@ function EditorMenubar:refresh()
             end)
             newlayer:addItem("Controller Layer", SKME.stub("New Controller Layer"))
             newlayer:addItem("Shape Layer", SKME.stub("New Shape Layer"))
+        edit:addItem("Map properties", function ()
+            Editor.inspector:onSelectObject(Editor.world.map)
+        end)
     self:addChild(self.bar)
 end
 
