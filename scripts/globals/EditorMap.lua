@@ -134,10 +134,12 @@ function EditorMap:loadLayer(layer)
             data.center_x = data.x + data.width/2
             data.center_y = data.y + data.height/2
             local object = self:loadObject(data.type, data)
-            object.object_id = object.object_id or ((i - 1) + layer_id_component)
-            table.insert(self.events, object)
-            object.layer = self.next_layer
-            self.world:addChild(object)
+            if object then
+                object.object_id = object.object_id or ((i - 1) + layer_id_component)
+                table.insert(self.events, object)
+                object.layer = self.next_layer
+                self.world:addChild(object)
+            end
         end
     elseif layer:includes(EditorTileLayer) then
         local reallayer = TileLayer(self, layer.data)

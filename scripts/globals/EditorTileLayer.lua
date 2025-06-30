@@ -11,11 +11,14 @@ end
 
 function EditorTileLayer:update()
     super.update(self)
-    local x, y = self:getHoveredTile()
-    if not x then return end
-    if Input.mouseDown() then
-        local single_tile = Editor.tiles_editor.clipboard[1][1]
-        self:setTile(x, y, single_tile.set.id, single_tile.tile)
+    local startx, starty = self:getHoveredTile()
+    if not startx then return end
+    if Input.mouseDown(1) then
+        for y, row in ipairs(Editor.tiles_editor.clipboard) do
+            for x, tile in ipairs(row) do
+                self:setTile(startx+x-1, starty+y-1, tile.set.id, tile.tile)
+            end
+        end
     end
 end
 

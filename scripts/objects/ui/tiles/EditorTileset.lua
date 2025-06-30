@@ -29,7 +29,7 @@ function EditorTileset:getHoveredTile(input_mousex, input_mousey)
     for x = 1, self.tileset.columns do
         for y = 0, math.floor(self.tileset.tile_count / self.tileset.columns) - 1 do
             local tile_id = (x + (y * self.tileset.columns)) - 1
-            local xpos, ypos = (x - 1) * self.tileset.tile_height, y * self.tileset.tile_width
+            local xpos, ypos = (x - 1) * self.tileset.tile_width, y * self.tileset.tile_height
             if CollisionUtil.pointRect(mx, my, xpos, ypos, self.tileset:getTileSize(tile_id)) then
                 return tile_id
             end
@@ -39,15 +39,14 @@ end
 
 function EditorTileset:draw()
     super.draw(self)
-    local active_tileset, active_tile = unpack(Editor.tiles_editor.active_tile)
     for x = 1, self.tileset.columns do
         for y = 0, math.floor(self.tileset.tile_count / self.tileset.columns) - 1 do
             local tile_id = (x + (y * self.tileset.columns)) - 1
-            local xpos, ypos = (x - 1) * self.tileset.tile_height, y * self.tileset.tile_width
+            local xpos, ypos = (x - 1) * self.tileset.tile_width, y * self.tileset.tile_height
             self.tileset:drawTile(tile_id, xpos, ypos)
-            if active_tileset == self.tileset and active_tile == tile_id then
+            if Editor.tiles_editor.active_tiles[self.tileset.id .. "#" .. tile_id] then
                 local w, h = self.tileset:getTileSize(tile_id)
-                love.graphics.setLineWidth(2)
+                love.graphics.setLineWidth(1)
                 love.graphics.rectangle("line", xpos + 1, ypos + 1, w - 2, h - 2)
             end
         end
@@ -56,11 +55,44 @@ end
 
 function EditorTileset:update()
     super.update(self)
-    local clicked, globalmx, globalmy = Input.mousePressed(1)
-    if not clicked then return end
+    local mousedown, globalmx, globalmy = Input.mouseDown(1)
     local tile = self:getHoveredTile(globalmx, globalmy)
-    if not tile then return end
-    Editor.tiles_editor:setActiveTile(self.tileset, tile)
+    if not tile then
+    elseif Input.mousePressed(1) then
+        Editor.tiles_editor:setActiveTile(self.tileset, tile)
+        self.pressed_tile = tile
+    elseif mousedown then
+        local function id_to_xy(n)
+            if type(n) ~= "number" then return n end
+            return ((n) % (self.tileset.columns)), math.floor(n / (self.tileset.columns))
+        end
+        local function xy_to_id(x, y)
+            return (x + (y * self.tileset.columns))
+        end
+        local startx, starty = id_to_xy(self.pressed_tile)
+        local endx, endy = id_to_xy(self:getHoveredTile())
+        if (not startx) or (not starty) then return end
+        if (not endx) or (not endy) then return end
+        if startx > endx then
+            startx, endx = endx, startx
+        end
+        if starty > endy then
+            starty, endy = endy, starty
+        end
+        local clipboard = {}
+        print("start",startx, starty)
+        print("end",endx, endy)
+        for y = starty, endy do
+            local row = {}
+            for x = startx, endx do
+                table.insert(row, {tile = xy_to_id(x, y), set = self.tileset})
+            end
+            table.insert(clipboard, row)
+        end
+        print("clipboard",#clipboard, #clipboard[1])
+        print()
+        Editor.tiles_editor:setClipboard(clipboard)
+    end
 end
 
 return EditorTileset
