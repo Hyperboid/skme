@@ -1,7 +1,8 @@
+-- Tiled format masquerading as SKME format. Will load, but looses collision and marker data.
 return {
+  format = "skme",
   version = "1.5",
   luaversion = "5.1",
-  tiledversion = "1.8.4",
   orientation = "orthogonal",
   renderorder = "right-down",
   width = 20,
@@ -11,13 +12,13 @@ return {
   nextlayerid = 6,
   nextobjectid = 12,
   properties = {
+    ["music"] = "whatever_i_feel_like",
     ["name"] = "Test Map - Room 2"
   },
   tilesets = {
     {
-      name = "castle",
       firstgid = 1,
-      filename = "../tilesets/castle.tsx"
+      id = "castle",
     }
   },
   layers = {
@@ -219,8 +220,7 @@ return {
       objects = {
         {
           id = 6,
-          name = "enemy",
-          type = "",
+          type = "enemy",
           shape = "rectangle",
           x = 530,
           y = 220,
@@ -235,8 +235,7 @@ return {
         },
         {
           id = 9,
-          name = "transition",
-          type = "",
+          type = "transition",
           shape = "rectangle",
           x = -40,
           y = 320,

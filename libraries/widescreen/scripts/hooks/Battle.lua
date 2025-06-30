@@ -1,139 +1,10 @@
-local Battle, super = Class("Battle")
+local Battle, super = Utils.hookScript(Battle)
 
 function Battle:init()
-    super.super.init(self)
+    super.init(self)
 
     if WidescreenLib.widescreen then self.x = WidescreenLib.SCREEN_WIDTH_DIST else self.x = 0 end
-
-    self.party = {}
-
-    self.money = 0
-    self.xp = 0
-
-    self.used_violence = false
-
-    self.ui_move = Assets.newSound("ui_move")
-    self.ui_select = Assets.newSound("ui_select")
-    self.spare_sound = Assets.newSound("spare")
-
-    self.party_beginning_positions = {} -- Only used in TRANSITION, but whatever
-    self.enemy_beginning_positions = {}
-
-    self.party_world_characters = {}
-    self.enemy_world_characters = {}
-    self.battler_targets = {}
-
-    self.encounter_context = nil
-
-    self:createPartyBattlers()
-
-    self.intro_timer = 0
-    self.offset = 0
     self.ab_off = (#Game.party > 3) and self.x - 2 or 0
-
-    self.transitioned = false
-    self.started = false
-
-    self.textbox_timer = 0
-    self.use_textbox_timer = true
-
-    -- states: BATTLETEXT, TRANSITION, INTRO, ACTIONSELECT, ACTING, SPARING, USINGITEMS, ATTACKING, ACTIONSDONE, ENEMYDIALOGUE, DIALOGUEEND, DEFENDING, VICTORY, TRANSITIONOUT
-    -- ENEMYSELECT, MENUSELECT, XACTENEMYSELECT, PARTYSELECT, DEFENDINGEND, DEFENDINGBEGIN
-
-    self.state = "NONE"
-    self.substate = "NONE"
-
-    self.camera = Camera(self, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH, SCREEN_HEIGHT, false)
-
-    self.cutscene = nil
-
-    self.current_selecting = 0
-
-    self.turn_count = 0
-
-    self.battle_ui = nil
-    self.tension_bar = nil
-
-    self.arena = nil
-    self.soul = nil
-
-    self.music = Music()
-
-    self.resume_world_music = false
-
-    self.mask = ArenaMask()
-    self:addChild(self.mask)
-
-    self.timer = Timer()
-    self:addChild(self.timer)
-
-    self.character_actions = {}
-
-    self.selected_character_stack = {}
-    self.selected_action_stack = {}
-
-    self.current_actions = {}
-    self.short_actions = {}
-    self.current_action_index = 1
-    self.processed_action = {}
-    self.processing_action = false
-
-    self.attackers = {}
-    self.normal_attackers = {}
-    self.auto_attackers = {}
-
-    self.attack_done = false
-    self.cancel_attack = false
-    self.auto_attack_timer = 0
-
-    self.post_battletext_func = nil
-    self.post_battletext_state = "ACTIONSELECT"
-
-    self.battletext_table = nil
-    self.battletext_index = 1
-
-    self.current_menu_x = 1
-    self.current_menu_y = 1
-
-    self.enemies = {}
-    self.enemy_dialogue = {}
-    self.enemies_to_remove = {}
-    self.defeated_enemies = {}
-
-    self.seen_encounter_text = false
-
-    self.waves = {}
-    self.finished_waves = false
-
-    self.state_reason = nil
-    self.substate_reason = nil
-
-    self.menu_items = {}
-
-    self.selected_enemy = 1
-    self.selected_spell = nil
-    self.selected_xaction = nil
-    self.selected_item = nil
-
-    self.spell_delay = 0
-    self.spell_finished = false
-
-    self.actions_done_timer = 0
-
-    self.xactions = {}
-
-    self.background_fade_alpha = 0
-
-    self.wave_length = 0
-    self.wave_timer = 0
-
-    self.should_finish_action = false
-    self.on_finish_keep_animation = nil
-    self.on_finish_action = nil
-
-    self.defending_begin_timer = 0
-
-    self.darkify = false
 end
 
 function Battle:postInit(state, encounter)
@@ -692,6 +563,36 @@ function Battle:onStateChange(old,new)
     end
 
     self.encounter:onStateChange(old,new)
+end
+
+function Battle:spawnSoul(x, y)
+    local bx, by = self:getFullTransform():inverseTransformPoint(self:getSoulLocation())
+    local color = {self.encounter:getSoulColor()}
+    self:addChild(HeartBurst(bx, by, color))
+    if not self.soul then
+        self.soul = self.encounter:createSoul(bx, by, color)
+        self.soul:transitionTo(x or SCREEN_WIDTH/2, y or SCREEN_HEIGHT/2)
+        self.soul.target_alpha = self.soul.alpha
+        self.soul.alpha = 0
+        if Game:getConfig("soulInvBetweenWaves") then
+            self.soul.inv_timer = Game.old_soul_inv_timer
+        end
+        Game.old_soul_inv_timer = 0
+        self:addChild(self.soul)
+    end
+
+    if self.state == "DEFENDINGBEGIN" or self.state == "DEFENDING" then
+        self.soul:onWaveStart()
+    end
+end
+
+function Battle:returnSoul(dont_destroy)
+    if dont_destroy == nil then dont_destroy = false end
+    local bx, by = self:getFullTransform():inverseTransformPoint(self:getSoulLocation(true))
+    if self.soul then
+        Game.old_soul_inv_timer = self.soul.inv_timer
+        self.soul:transitionTo(bx, by, not dont_destroy)
+    end
 end
 
 function Battle:drawBackground()

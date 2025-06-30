@@ -3,6 +3,7 @@ Registry.registerGlobal("WidescreenLib", lib)
 WidescreenLib = lib
 
 function WidescreenLib:setMode(width, height)
+    if self.nosetmode then return end
     width = width or SCREEN_WIDTH*Kristal.Config["windowScale"]
     height = height or SCREEN_HEIGHT*Kristal.Config["windowScale"]
     local cur_width, cur_height = love.window.getMode()
@@ -13,10 +14,9 @@ function WidescreenLib:setMode(width, height)
 end
 
 function WidescreenLib:init()
-    print("Loaded Kristal Widescreen")
     WidescreenLib.INIT_SCREEN_WIDTH = SCREEN_WIDTH
     WidescreenLib.WIDE_SCREEN_WIDTH = math.floor((1920*480)/1080) - 1
-    self.widescreen = true
+    self.widescreen = false
     if self.widescreen then
         SCREEN_WIDTH = WidescreenLib.WIDE_SCREEN_WIDTH
     else
@@ -26,8 +26,8 @@ function WidescreenLib:init()
 
     if self.widescreen then
         SCREEN_CANVAS = love.graphics.newCanvas(SCREEN_WIDTH * Kristal.Config["windowScale"], SCREEN_HEIGHT * Kristal.Config["windowScale"])
-        self:setMode()
     end
+    self:setMode()
 
     Utils.hook(DarkStorageMenu, "init", function(orig, self, top_storage, bottom_storage)
         orig(self, top_storage, bottom_storage)
@@ -149,6 +149,11 @@ function WidescreenLib:init()
         end
     end)
 
+    Utils.hook(Kristal, "quickReload", function (orig, ...)
+        self.nosetmode = true
+        return orig(...)
+    end)
+    print("Loaded Kristal Widescreen")
 end
 
 function WidescreenLib:hookMoreParty()
