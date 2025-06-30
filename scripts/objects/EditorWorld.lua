@@ -1,6 +1,7 @@
 ---@class EditorWorld: Object
 ---@overload fun(...): EditorWorld
 ---@field editor Editor
+---@field camera EditorCamera
 local EditorWorld, super = Class(Object)
 
 function EditorWorld:init(editor)
@@ -9,7 +10,7 @@ function EditorWorld:init(editor)
     self.player = Character(Game.party[1]:getActor(), Game.world.player:getPosition())
     self.player:setFacing(Game.world.player.facing)
     self.player:setLayer(50)
-    self.camera = Camera(self, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, true)
+    self.camera = EditorCamera(self, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, true)
     self.camera.target_getter = function () return self.player end
     self:addChild(self.player)
 end
@@ -76,6 +77,23 @@ function EditorWorld:resizeMapTo(width, height)
     end
     self.width = self.map.width * self.map.tile_width
     self.height = self.map.height * self.map.tile_height
+end
+
+function EditorWorld:update()
+    super.update(self)
+    local px, py = self.player:getRelativePos(0,0)
+    local psw, psh = self.player:getScaledSize()
+    if Editor.state == "TRANSITIONOUT" or CollisionUtil.rectRectInside(0,0, self.width, self.height, px, py, psw, psh) then
+        self.camera.keep_bounds_timer = Utils.approach(self.camera.keep_bounds_timer, 0, DT*2*4)
+    else
+        self.camera.keep_bounds_timer = Utils.approach(self.camera.keep_bounds_timer, 2, DT*2*4)
+    end
+end
+
+function EditorWorld:draw()
+    super.draw(self)
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", -2, -2, self.width+4, self.height+4)
 end
 
 return EditorWorld
