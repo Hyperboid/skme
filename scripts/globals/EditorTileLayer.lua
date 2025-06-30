@@ -14,11 +14,17 @@ function EditorTileLayer:update()
     local startx, starty = self:getHoveredTile()
     if not startx then return end
     if Input.mouseDown(1) then
-        for y, row in ipairs(Editor.tiles_editor.clipboard) do
-            for x, tile in ipairs(row) do
-                self:setTile(startx+x-1, starty+y-1, tile.set.id, tile.tile)
+        if Input.shift() then
+            self:setTile(startx, starty, 0)
+        else
+            for y, row in ipairs(Editor.tiles_editor.clipboard) do
+                for x, tile in ipairs(row) do
+                    self:setTile(startx+x-1, starty+y-1, tile.set.id, tile.tile)
+                end
             end
         end
+    elseif Input.mouseDown(2) then
+        -- TODO: Selection, cut, and copy
     end
 end
 
