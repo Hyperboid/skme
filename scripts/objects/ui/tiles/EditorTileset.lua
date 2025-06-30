@@ -44,10 +44,17 @@ function EditorTileset:draw()
             local tile_id = (x + (y * self.tileset.columns)) - 1
             local xpos, ypos = (x - 1) * self.tileset.tile_width, y * self.tileset.tile_height
             self.tileset:drawTile(tile_id, xpos, ypos)
+        end
+    end
+    for x = 1, self.tileset.columns do
+        for y = 0, math.floor(self.tileset.tile_count / self.tileset.columns) - 1 do
+            local tile_id = (x + (y * self.tileset.columns)) - 1
+            local xpos, ypos = (x - 1) * self.tileset.tile_width, y * self.tileset.tile_height
             if Editor.tiles_editor.active_tiles[self.tileset.id .. "#" .. tile_id] then
                 local w, h = self.tileset:getTileSize(tile_id)
                 love.graphics.setLineWidth(1)
-                love.graphics.rectangle("line", xpos + 1, ypos + 1, w - 2, h - 2)
+                love.graphics.setLineJoin("miter")
+                love.graphics.rectangle("line", xpos+2, ypos+2, w-3, h-3)
             end
         end
     end
