@@ -73,7 +73,7 @@ function EditorEvent:registerProperties(inspector)
                 component = FieldMenuItemComponent(options)
             end
         elseif dattype == "boolean" then
-            component = FieldMenuItemComponent(options)
+            component = CheckboxMenuItemComponent(options)
         elseif dattype == "number" then
             self.properties[propdata.id] = self.properties[propdata.id] or 0
             component = NumberInputMenuItemComponent(options)
