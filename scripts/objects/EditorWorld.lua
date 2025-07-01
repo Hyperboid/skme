@@ -10,6 +10,7 @@ function EditorWorld:init(editor)
     self.player = Character(Game.party[1]:getActor(), Game.world.player:getPosition())
     self.player.persistent = true
     self.player:setFacing(Game.world.player.facing)
+    self.world = self
     self.player:setLayer(50)
     self.camera = EditorCamera(self, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, true)
     self.camera.target_getter = function () return self.player end

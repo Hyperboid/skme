@@ -96,20 +96,30 @@ function EditorEvent:draw()
     Draw.setColor(1,0,1)
     self:drawOverlay()
 end
+
 function EditorEvent:drawOverlay(force, fill)
     if not force and Gamestate.current() ~= Editor then return end
     local alpha = Editor.active_layer == self.parent and 1 or 0.2
     local r, g, b = love.graphics.getColor()
+    love.graphics.setPointSize(1)
+    love.graphics.points(0, 0)
     love.graphics.push()
     love.graphics.scale(1 / self.scale_x)
     love.graphics.setFont(Assets.getFont("main",16))
     Draw.setColor(0,0,0,alpha^2)
-    love.graphics.printf(self.type or "", 0,0,(self.width * self.scale_x) - 4)
-    love.graphics.printf(self.type or "", 2,0,(self.width * self.scale_x) - 4)
-    love.graphics.printf(self.type or "", 1,-1,(self.width * self.scale_x) - 4)
-    love.graphics.printf(self.type or "", 1,1,(self.width * self.scale_x) - 4)
-    Draw.setColor(r+.5,g+.5,b+.5,alpha)
-    love.graphics.printf(self.type or "", 1,0,(self.width * self.scale_x) - 4)
+    love.graphics.push()
+        local textx, texty = love.graphics.transformPoint((self.width/2) + 1,0 - 16)
+        textx = Utils.clamp(textx, Editor.margins[1], SCREEN_WIDTH-Editor.margins[3])
+        texty = Utils.clamp(texty, Editor.margins[2]-10, SCREEN_HEIGHT-Editor.margins[4] - 10)
+        love.graphics.origin()
+        Draw.setColor(0,0,0,alpha^2)
+        Draw.printAlign(self.type or "", textx + 0,0 + texty, "center")
+        Draw.printAlign(self.type or "", textx + 2,0 + texty, "center")
+        Draw.printAlign(self.type or "", textx + 1,-1 + texty, "center")
+        Draw.printAlign(self.type or "", textx + 1,1 + texty, "center")
+        Draw.setColor(r+.5,g+.5,b+.5,alpha)
+        Draw.printAlign(self.type or "", textx + 1,0 + texty, "center")
+    love.graphics.pop()
     Draw.setColor(r, g, b, alpha)
     love.graphics.pop()
     love.graphics.setLineWidth(2 / self.scale_x)
@@ -132,6 +142,8 @@ function EditorEvent:drawOverlay(force, fill)
                 end
             end
             Draw.setColor(1, 1, 1, 1)
+        elseif self.collider:includes(Hitbox) then
+            love.graphics.rectangle("line", self.collider.x, self.collider.y, self.collider.width, self.collider.width)
         else
             self.collider:draw(r,g,b)
         end
