@@ -56,6 +56,8 @@ function EditorMap:createLayer(ltype, data)
     assert(self.tile_width)
     if ltype:lower() == "objectgroup" then
         return EditorObjectLayer(data)
+    elseif ltype:lower() == "controllers" then
+        return EditorControllerLayer(data)
     elseif ltype:lower() == "tilelayer" then
         local layer = EditorTileLayer(self, data)
         table.insert(self.tile_layers, layer)

@@ -143,7 +143,7 @@ function EditorEvent:drawOverlay(force, fill)
             end
             Draw.setColor(1, 1, 1, 1)
         elseif self.collider:includes(Hitbox) then
-            love.graphics.rectangle("line", self.collider.x, self.collider.y, self.collider.width, self.collider.width)
+            love.graphics.rectangle("line", self.collider.x, self.collider.y, self.collider.width, self.collider.height)
         else
             self.collider:draw(r,g,b)
         end

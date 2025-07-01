@@ -35,9 +35,11 @@ function Editor:enter(previous_state)
     self.stage:addChild(self.inspector)
     self.stage:addChild(self.menubar)
     self.state_manager = StateManager('TRANSITION', self, true)
+    self.controllers_editor = EditorControllers() ---@type EditorControllers
     self.objects_editor = EditorObjects() ---@type EditorObjects
     self.tiles_editor = EditorTiles() ---@type EditorTiles
-    self.shapes_editor = EditorShapes() ---@type EditorTiles
+    self.shapes_editor = EditorShapes() ---@type EditorShapes
+    self.state_manager:addState("CONTROLLERS", self.controllers_editor)
     self.state_manager:addState("OBJECTS", self.objects_editor)
     self.state_manager:addState("TILES", self.tiles_editor)
     self.state_manager:addState("SHAPES", self.shapes_editor)
@@ -96,7 +98,9 @@ function Editor:selectLayer(layer)
     self:setState("INVALID")
     if not self.active_layer then return end
     self.inspector:onSelectObject(self.active_layer)
-    if self.active_layer:includes(EditorObjectLayer) then
+    if self.active_layer:includes(EditorControllerLayer) then
+        self:setState("CONTROLLERS")
+    elseif self.active_layer:includes(EditorObjectLayer) then
         self:setState("OBJECTS")
     elseif self.active_layer:includes(EditorTileLayer) then
         self:setState("TILES")
@@ -316,12 +320,12 @@ function Editor:drawLayerList()
     for _, layer in ipairs(self.world.map.layers) do
         love.graphics.setColor(1,1,1)
         local icon
-        if layer:includes(TileLayer) then
+        if layer.ICON then
+            icon = Assets.getTexture(layer.ICON)
+        elseif layer:includes(TileLayer) then
             icon = Assets.getTexture("ui/editor/layer/tiles")
         elseif layer:includes(EditorObjectLayer) then
             icon = Assets.getTexture("ui/editor/layer/objects")
-        elseif layer.ICON then
-            icon = Assets.getTexture(layer.ICON)
         end
         if self.active_layer == layer then
             love.graphics.rectangle("fill", -2, -2, 20, 20)

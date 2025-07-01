@@ -92,7 +92,6 @@ end
 
 function EditorObjectLayer:save()
     local data = super.save(self)
-    data.type = "objectgroup"
     data.objects = {}
     for index, value in pairs(self.objects) do
         data.objects[index] = value:save()
