@@ -118,14 +118,14 @@ function EditorObjects:onMousePressedPoints(x, y, button, touch, presses)
     local mouse_collider = Hitbox(Editor.stage, (x)-p, (y)-p, p+p, p+p)
     for point, collider in pairs(self.points_colliders) do
         if mouse_collider:collidesWith(collider) then
-            if button == 2 and #self.selected_object.collider.points > 2 then
+            if button == 2 and #self.selected_object.collider.points > 3 then
                 Utils.removeFromTable(self.selected_object.collider.points, point)
                 return
             end
             self.selected_point = point
             self.grabbing = true
-            self.grab_offset_x = x-point[1]
-            self.grab_offset_y = y-point[2]
+            self.grab_offset_x = (Editor.world.camera.x+x)-point[1]
+            self.grab_offset_y = (Editor.world.camera.y+y)-point[2]
             return
         end
     end
@@ -173,7 +173,7 @@ end
 function EditorObjects:updatePoints()
     if self.grabbing and self.selected_point then
         local x, y = Input.getCurrentCursorPosition()
-        self.selected_point[1], self.selected_point[2] = x - self.grab_offset_x, y - self.grab_offset_y
+        self.selected_point[1], self.selected_point[2] = (Editor.world.camera.x+x) - self.grab_offset_x, (Editor.world.camera.y+y) - self.grab_offset_y
         local roundx, roundy = 1,1
         if Input.ctrl() then
             roundx, roundy = Editor.world.map.tile_width, Editor.world.map.tile_height
