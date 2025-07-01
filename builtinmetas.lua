@@ -55,14 +55,19 @@ m[TreasureChest] = {
     sprite = "world/events/treasure_chest",
     point = true,
     properties = {
-        cutscene_prop,
-    }
+        {id = "money", type = "number", delete_empty = true},
+        {id = "item", type = "string", delete_empty = true, completions = Registry.items}
+    },
 }
 
 m[CyberTrashCan] = {
     origin = {0.5, 1},
     point = true,
     sprite = "world/events/cyber_trash",
+    properties = {
+        {id = "money", type = "number", delete_empty = true},
+        {id = "item", type = "string", delete_empty = true, completions = Registry.items}
+    },
 }
 
 m[NPC] = {
