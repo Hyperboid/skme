@@ -56,12 +56,13 @@ function EditorMap:createLayer(ltype, data)
     assert(self.tile_width)
     if ltype:lower() == "objectgroup" then
         return EditorObjectLayer(data)
-    elseif ltype:lower() == "collision" then
-        local layer = EditorCollisionLayer(data)
-        return layer
     elseif ltype:lower() == "tilelayer" then
         local layer = EditorTileLayer(self, data)
         table.insert(self.tile_layers, layer)
+        return layer
+    -- Should always be last
+    elseif type(data.shapes) == "table" then
+        local layer = EditorShapeLayer(data)
         return layer
     end
     error("Invalid layer type: "..ltype)
@@ -174,13 +175,17 @@ function EditorMap:loadLayer(layer)
         local reallayer = TileLayer(self, layer.data)
         reallayer.layer = self.next_layer
         reallayer:setParent(self.world)
-    elseif layer:includes(EditorCollisionLayer) then
-        ---@cast layer EditorCollisionLayer
-        Utils.merge(self.collision, self:loadHitboxes(layer))
+    elseif layer:includes(EditorShapeLayer) then
+        ---@cast layer EditorShapeLayer
+        if layer.type == "collision" then
+            Utils.merge(self.collision, self:loadHitboxes(layer))
+        elseif layer.type == "battleareas" then
+            Utils.merge(self.battle_areas, self:loadHitboxes(layer))
+        end
     end
 end
 
----@param layer EditorCollisionLayer
+---@param layer EditorShapeLayer
 function EditorMap:loadHitboxes(layer)
     if not isClass(layer) then
         return super.loadHitboxes(self, layer)

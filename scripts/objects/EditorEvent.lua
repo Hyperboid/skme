@@ -86,12 +86,17 @@ function EditorEvent:registerProperties(inspector)
     end
 end
 
+---@param context ContextMenu
+function EditorEvent:registerEditorContext(context)
+    
+end
+
 function EditorEvent:draw()
     super.draw(self)
     Draw.setColor(1,0,1)
     self:drawOverlay()
 end
-function EditorEvent:drawOverlay(force)
+function EditorEvent:drawOverlay(force, fill)
     if not force and Gamestate.current() ~= Editor then return end
     local alpha = Editor.active_layer == self.parent and 1 or 0.2
     local r, g, b = love.graphics.getColor()
@@ -130,8 +135,16 @@ function EditorEvent:drawOverlay(force)
         else
             self.collider:draw(r,g,b)
         end
+        if fill then
+            self.collider:drawFill(r,g,b,alpha*0.5)
+        end
     else
-        love.graphics.rectangle("line", -1, -1, self.width+2, self.height+2)
+        love.graphics.rectangle("line", 0, 0, self.width, self.height)
+        if fill then
+            Draw.setColor(r, g, b, alpha*0.5)
+            love.graphics.rectangle("fill", 0, 0, self.width, self.height)
+            
+        end
     end
 end
 

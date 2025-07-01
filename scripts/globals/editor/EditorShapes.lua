@@ -23,6 +23,9 @@ function EditorShapes:openContextMenu(obj)
         obj:remove()
         Editor:endAction()
     end)
+    if obj.registerEditorContext then
+        obj:registerEditorContext(Editor.context)
+    end
     Editor.context:setPosition(Input.getCurrentCursorPosition())
     Editor.stage:addChild(Editor.context)
 end
