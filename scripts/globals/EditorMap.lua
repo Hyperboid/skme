@@ -155,9 +155,25 @@ end
 
 ---@param layer EditorLayer
 function EditorMap:loadLayer(layer)
-    if layer:includes(EditorObjectLayer) then
-        -- TODO: Some people think 1000 isn't enough. It will be for us.
-        local layer_id_component = ((Utils.getKey(self.layers, layer) - 1) * 1000)
+    -- TODO: Some people think 1000 isn't enough. It will be for us.
+    local layer_id_component = ((Utils.getKey(self.layers, layer) - 1) * 1000)
+    if layer:includes(EditorControllerLayer) then
+        layer.layer = self.next_layer
+        ---@cast layer EditorControllerLayer
+        for i, data in pairs(layer.data.objects) do
+            data.width = data.width or 0
+            data.height = data.height or 0
+            data.center_x = data.x + data.width/2
+            data.center_y = data.y + data.height/2
+            local object = self:loadController(data.type, data)
+            if object then
+                object.object_id = object.object_id or ((i - 1) + layer_id_component)
+                table.insert(self.events, object)
+                object.layer = self.next_layer
+                self.world:addChild(object)
+            end
+        end
+    elseif layer:includes(EditorObjectLayer) then
         layer.layer = self.next_layer
         ---@cast layer EditorObjectLayer
         for i, data in pairs(layer.data.objects) do
