@@ -2,6 +2,10 @@
 local EditorShape, super = Class("EditorEvent")
 ---@cast super EditorEvent
 
+function EditorShape:init(data)
+    super.init(self, data.name, nil, data)
+end
+
 function EditorShape:draw()
     super.super.draw(self)
     Draw.setColor(self.parent:getDrawColor())

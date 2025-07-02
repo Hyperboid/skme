@@ -5,11 +5,16 @@ function EditorShapeLayer:init(data)
     super.init(self, data)
     self.shapes = {}
     for index, shapedata in ipairs(data and data.shapes or {}) do
-        local shape = EditorShape(shapedata.name, nil, shapedata)
+        local shape = EditorShape(shapedata)
         table.insert(self.shapes, shape)
         self:addChild(shape)
     end
-    self:setType(data.type or "collision")
+    self:setType(data and data.type or "collision")
+end
+
+function EditorShapeLayer:addShape(shape)
+    table.insert(self.shapes, shape)
+    self:addChild(shape)
 end
 
 function EditorShapeLayer:setType(type)
@@ -22,6 +27,9 @@ function EditorShapeLayer:setType(type)
         self.color = {1, 0, 0}
     elseif self.type == "enemycollision" then
         self.ICON = "ui/editor/layer/enemycollision"
+        self.color = {0.5, 0.5, 1}
+    elseif self.type == "markers" then
+        self.ICON = "ui/editor/layer/markers"
         self.color = {0.5, 0.5, 1}
     end
 end
@@ -36,6 +44,9 @@ function EditorShapeLayer:getContextOptions(context)
     end)
     context:addMenuItem("Convert to battle area", "", function ()
         self:setType("battleareas")
+    end)
+    context:addMenuItem("Convert to markers", "", function ()
+        self:setType("markers")
     end)
     return context
 end

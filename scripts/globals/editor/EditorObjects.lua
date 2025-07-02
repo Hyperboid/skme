@@ -143,9 +143,13 @@ end
 function EditorObjects:selectObject(obj)
     if self.selected_object then
         self.selected_object:removeFX("editor_vfx")
+        self.selected_object:removeFX("editor_vfx")
+        self.selected_object:removeFX("editor_vfx")
     end
     self.selected_object = obj
     if self.selected_object then
+        self.selected_object:removeFX("editor_vfx")
+        self.selected_object:removeFX("editor_vfx")
         self.selected_object:addFX(OutlineFX({1,1,1,0.8}), "editor_vfx")
     end
     Editor.inspector:onSelectObject(obj or Editor.active_layer)

@@ -4,12 +4,13 @@
 local EditorEvent, super = Class(Object)
 
 function EditorEvent:init(name, eventtype, data)
-    self.object_id = data.id
     self.type = name
     ---@type Event
     self.eventtype = eventtype
     self.meta = self.eventtype and self.eventtype["EDITOR_METADATA"] or {}
     self.data = data
+    data = data or {}
+    self.object_id = data.id
     super.init(self, data.x, data.y, data.width, data.height)
     if data.polygon then
         self.collider = Utils.colliderFromShape(self, {shape = "polygon", polygon = data.polygon})
