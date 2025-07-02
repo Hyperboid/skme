@@ -199,7 +199,28 @@ function EditorMap:loadLayer(layer)
             Utils.merge(self.collision, self:loadHitboxes(layer))
         elseif layer.type == "battleareas" then
             Utils.merge(self.battle_areas, self:loadHitboxes(layer))
+        elseif layer.type == "markers" then
+            self:loadMarkers(layer)
         end
+    end
+end
+
+---@param layer EditorShapeLayer
+function EditorMap:loadMarkers(layer)
+    for _,v in ipairs(layer.shapes) do
+        v.width = v.width or 0
+        v.height = v.height or 0
+        v.center_x = v.x + v.width/2
+        v.center_y = v.y + v.height/2
+
+        local marker = Utils.copy(v, true)
+
+        marker.x = marker.x + (layer.offsetx or 0)
+        marker.y = marker.y + (layer.offsety or 0)
+        marker.center_x = marker.center_x + (layer.offsetx or 0)
+        marker.center_y = marker.center_y + (layer.offsety or 0)
+
+        self.markers[marker.name or marker.type or ""] = marker
     end
 end
 

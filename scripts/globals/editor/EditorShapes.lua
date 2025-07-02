@@ -11,6 +11,10 @@ function EditorShapes:init()
             name = "Rectangle",
             constructor = function() return EditorShape({width = 40, height = 40}) end
         },
+        {
+            name = "Point",
+            constructor = function() return EditorShape({shape = "point"}) end
+        },
     }) do
         self.browser:addChild(TextMenuItemComponent(value.name, function ()
             local layer = Editor.active_layer--[[@as EditorShapeLayer]]

@@ -53,7 +53,7 @@ function EditorTileset:draw()
             if Editor.tiles_editor.active_tiles[self.tileset.id .. "#" .. tile_id] then
                 local w, h = self.tileset:getTileSize(tile_id)
                 love.graphics.setLineWidth(1)
-                love.graphics.setLineJoin("miter")
+                love.graphics.setLineJoin("bevel")
                 love.graphics.rectangle("line", xpos+2, ypos+2, w-3, h-3)
             end
         end

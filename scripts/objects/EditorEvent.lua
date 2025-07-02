@@ -10,6 +10,9 @@ function EditorEvent:init(name, eventtype, data)
     self.meta = self.eventtype and self.eventtype["EDITOR_METADATA"] or {}
     self.data = data
     data = data or {}
+    if data.shape == "point" then
+        self.collider = PointCollider(self, 0, 0)
+    end
     self.object_id = data.id
     super.init(self, data.x, data.y, data.width, data.height)
     if data.polygon then
@@ -98,6 +101,13 @@ function EditorEvent:draw()
     self:drawOverlay()
 end
 
+function EditorEvent:isPoint()
+    if self.collider and self.collider:includes(PointCollider) then
+        return true
+    end
+    return self.width == 0 and self.height == 0
+end
+
 function EditorEvent:drawOverlay(force, fill)
     if not force and Gamestate.current() ~= Editor then return end
     local alpha = Editor.active_layer == self.parent and 1 or 0.2
@@ -110,6 +120,9 @@ function EditorEvent:drawOverlay(force, fill)
     Draw.setColor(0,0,0,alpha^2)
     love.graphics.push()
         local textx, texty = love.graphics.transformPoint((self.width/2) + 1,0 - 16)
+        if self:isPoint() then
+            texty = texty - 34
+        end
         textx = Utils.clamp(textx, Editor.margins[1], SCREEN_WIDTH-Editor.margins[3])
         texty = Utils.clamp(texty, Editor.margins[2]-10, SCREEN_HEIGHT-Editor.margins[4] - 10)
         love.graphics.origin()
@@ -118,7 +131,7 @@ function EditorEvent:drawOverlay(force, fill)
         Draw.printAlign(self.type or "", textx + 2,0 + texty, "center")
         Draw.printAlign(self.type or "", textx + 1,-1 + texty, "center")
         Draw.printAlign(self.type or "", textx + 1,1 + texty, "center")
-        Draw.setColor(r+.5,g+.5,b+.5,alpha)
+        Draw.setColor(r+.2,g+.2,b+.2,alpha)
         Draw.printAlign(self.type or "", textx + 1,0 + texty, "center")
     love.graphics.pop()
     Draw.setColor(r, g, b, alpha)
@@ -145,12 +158,18 @@ function EditorEvent:drawOverlay(force, fill)
             Draw.setColor(1, 1, 1, 1)
         elseif self.collider:includes(Hitbox) then
             love.graphics.rectangle("line", self.collider.x, self.collider.y, self.collider.width, self.collider.height)
+        elseif self.collider:includes(PointCollider) then
+            local tex = Assets.getTexture("ui/editor/widgets/marker")
+            Draw.draw(tex, 0, 0, 0, 2, 2, tex:getWidth()/2, tex:getHeight())
         else
             self.collider:draw(r,g,b)
         end
         if fill then
             self.collider:drawFill(r,g,b,alpha*0.5)
         end
+    elseif self.width == 0 and self.height == 0 then
+        local tex = Assets.getTexture("ui/editor/widgets/marker")
+        Draw.draw(tex, 0, 0, 0, 2, 2, tex:getWidth()/2, tex:getHeight())
     else
         love.graphics.rectangle("line", 0, 0, self.width, self.height)
         if fill then

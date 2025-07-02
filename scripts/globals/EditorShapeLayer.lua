@@ -30,7 +30,7 @@ function EditorShapeLayer:setType(type)
         self.color = {0.5, 0.5, 1}
     elseif self.type == "markers" then
         self.ICON = "ui/editor/layer/markers"
-        self.color = {0.5, 0.5, 1}
+        self.color = {0.5, 0, 1}
     end
 end
 
