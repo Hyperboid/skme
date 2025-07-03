@@ -38,7 +38,7 @@ function EditorCamera:getMaxPosition(bx, by, bw, bh)
             bx, by, bw, bh = self:getBounds()
         end
         local maxx, maxy = bx + bw - (self.width / self.zoom_x) / 2, by + bh - (self.height / self.zoom_y) / 2
-        return Utils.lerp(maxx, by + bh, self.keep_bounds_timer, true), Utils.lerp(maxy, by + bh, self.keep_bounds_timer, true)
+        return Utils.lerp(maxx, bx + bw, self.keep_bounds_timer, true), Utils.lerp(maxy, by + bh, self.keep_bounds_timer, true)
     end
 end
 
