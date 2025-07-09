@@ -165,7 +165,12 @@ function EditorEvent:drawOverlay(force, fill)
             self.collider:draw(r,g,b)
         end
         if fill then
-            self.collider:drawFill(r,g,b,alpha*0.5)
+            if not pcall(function ()
+                self.collider:drawFill(r,g,b,alpha*0.5)
+            end) then
+                Draw.setColor(COLORS.red)
+                love.graphics.print("error drawing collider")
+            end
         end
     elseif self.width == 0 and self.height == 0 then
         local tex = Assets.getTexture("ui/editor/widgets/marker")
