@@ -6,6 +6,7 @@ local EditorTileset, super = Class({Object, CLASS_NAME_GETTER"MouseMenuComponent
 
 ---@param tileset Tileset
 function EditorTileset:init(tileset, x, y)
+    Component.init(self) -- This sucks ass but it fixes the crash. So does it really suck ass?
     super.init(self, x, y)
     self:setTileset(tileset)
 end
@@ -23,7 +24,7 @@ end
 
 ---@return number?
 function EditorTileset:getHoveredTile(input_mousex, input_mousey)
-    local hovered, mx, my = self:isHovered()
+    local hovered, mx, my = self:isHovered(input_mousex, input_mousey)
     if not hovered then return end
     -- TODO: Use simple math to optimize this
     for x = 1, self.tileset.columns do
