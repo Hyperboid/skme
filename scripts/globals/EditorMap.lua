@@ -55,16 +55,16 @@ end
 function EditorMap:createLayer(ltype, data)
     assert(self.tile_width)
     if ltype:lower() == "objectgroup" then
-        return EditorObjectLayer(data)
+        return EditorObjectLayer(data, self)
     elseif ltype:lower() == "controllers" then
-        return EditorControllerLayer(data)
+        return EditorControllerLayer(data, self)
     elseif ltype:lower() == "tilelayer" then
         local layer = EditorTileLayer(self, data)
         table.insert(self.tile_layers, layer)
         return layer
     -- Should always be last
     elseif type(data.shapes) == "table" then
-        local layer = EditorShapeLayer(data)
+        local layer = EditorShapeLayer(data, map)
         return layer
     end
     error("Invalid layer type: "..ltype)

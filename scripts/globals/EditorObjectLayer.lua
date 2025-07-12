@@ -4,7 +4,7 @@ local EditorObjectLayer, super = Class("EditorLayer")
 EditorObjectLayer.DEFAULT_NAME = "Object Layer"
 EditorObjectLayer.TYPE = "objectgroup"
 
-function EditorObjectLayer:init(data)
+function EditorObjectLayer:init(data, map)
     super.init(self, data)
     self.world = Editor.world
     self.objects = {}
@@ -12,6 +12,9 @@ function EditorObjectLayer:init(data)
     if data then
         for index, value in pairs(data.objects) do
             self.objects[index] = self:loadObject(value.type, value)
+            if value.gid then
+                self.objects[index]:applyEditorTileObject(value, map)
+            end
             self:addChild(self.objects[index])
         end
     end

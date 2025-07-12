@@ -19,7 +19,7 @@ function EditorEvent:init(name, eventtype, data)
         self.collider = Utils.colliderFromShape(self, {shape = "polygon", polygon = data.polygon})
     end
     self.properties = data.properties or {}
-    
+
     if self.meta.origin then
         local ox, oy = unpack(type(self.meta.origin) == "number" and {self.meta.origin, self.meta.origin} or self.meta.origin)
         if self.meta.origin.exact then
@@ -39,6 +39,20 @@ function EditorEvent:init(name, eventtype, data)
         if not data.height or data.height == 0 then
             self.height = self.sprite:getScaledHeight()
         end
+    end
+end
+
+function EditorEvent:applyEditorTileObject(data, map)
+    self.gid = data.gid
+    if data.gid then
+        local tile = map:createTileObject(data, 0, 0, self.width, self.height)
+
+        local ox, oy = tile:getOrigin()
+        self:setOrigin(ox, oy)
+
+        tile:setPosition(ox * self.width, oy * self.height)
+
+        self:addChild(tile)
     end
 end
 
@@ -200,6 +214,7 @@ function EditorEvent:save()
         type = self.type,
         x = self.x,
         y = self.y,
+        gid = self.gid,
         width = self.width,
         height = self.height,
         properties = self.properties and Utils.copy(self.properties, true),

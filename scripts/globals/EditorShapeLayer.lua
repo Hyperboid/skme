@@ -1,8 +1,8 @@
 ---@class EditorShapeLayer : EditorLayer
 local EditorShapeLayer, super = Class("EditorLayer")
 
-function EditorShapeLayer:init(data)
-    super.init(self, data)
+function EditorShapeLayer:init(data, map)
+    super.init(self, data, map)
     self.shapes = {}
     for index, shapedata in ipairs(data and data.shapes or {}) do
         local shape = EditorShape(shapedata)
