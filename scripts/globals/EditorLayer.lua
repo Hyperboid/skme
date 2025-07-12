@@ -11,6 +11,7 @@ function EditorLayer:init(data)
 end
 
 function EditorLayer:editorLayerInit(data)
+    self.properties = data and data.properties or {}
     self.name = data and data.name or self.DEFAULT_NAME
     if data then
         self.visible = data.visible ~= false
@@ -29,6 +30,7 @@ function EditorLayer:save()
         name = self.name,
         visible = self.visible,
         type = self.TYPE,
+        properties = self.properties,
     }
     self:onSave(data)
     return data
