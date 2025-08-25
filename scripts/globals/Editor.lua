@@ -257,7 +257,7 @@ function Editor:playtest()
         inspector = {origin_x = 1},
         menubar = {origin_y = 1},
     }, "out-quad", function()
-        Gamestate.pop()
+        Kristal.popState()
         -- Trick hump into thinking everything is okay (also work around a 1-frame bug with darkfountain)
         love.update(DT)
     end)

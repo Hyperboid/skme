@@ -2,7 +2,7 @@
 local love, super = Utils.hookScript(love)
 
 function love.mousepressed(win_x, win_y, button, istouch, presses)
-    if not (button == 3 and Gamestate.current() == Editor) then
+    if not (button == 3 and Kristal.getState() == Editor) then
         return super.mousepressed(win_x, win_y, button, istouch, presses)
     end
     Input.active_gamepad = nil

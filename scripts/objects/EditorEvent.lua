@@ -123,7 +123,7 @@ function EditorEvent:isPoint()
 end
 
 function EditorEvent:drawOverlay(force, fill)
-    if not force and Gamestate.current() ~= Editor then return end
+    if not force and Kristal.getState() ~= Editor then return end
     local alpha = Editor.active_layer == self.parent and 1 or 0.2
     local r, g, b = love.graphics.getColor()
     love.graphics.setPointSize(1)
