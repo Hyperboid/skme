@@ -258,7 +258,7 @@ function Editor:playtest()
         menubar = {origin_y = 1},
     }, "out-quad", function()
         Kristal.popState()
-        -- Trick hump into thinking everything is okay (also work around a 1-frame bug with darkfountain)
+        -- Work around a 1-frame bug with darkfountain (originally meant to just trick hump lol)
         love.update(DT)
     end)
 end
